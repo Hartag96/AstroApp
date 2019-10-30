@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button, TextInput, Image } from 'react-native';
 import styles from './RootScressStyle';
 
-class RootScreen extends Component {
-  componentMountDid() {
-
-  }
-
+export default class RootScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
@@ -18,10 +14,10 @@ class RootScreen extends Component {
         <TextInput style={styles.passwordInput} placeholder="password" secureTextEntry={true}></TextInput>
         <Button title="Log in" style={styles.frontButton}></Button>
         <Text style={styles.textMargin}>Or</Text>
-        <Button title="Sign up" style={styles.frontButton}></Button>
+        <Button title="Sign up" style={styles.frontButton} onPress={() =>
+            this.props.navigation.navigate('Register')
+        }></Button>
       </View>
     )
   }
 }
-
-export default RootScreen
