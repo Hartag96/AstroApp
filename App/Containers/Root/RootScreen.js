@@ -15,8 +15,11 @@ class RootScreen extends Component {
 
   handlePress = async () => {
     try {
-      const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/mobile_test', {
+      const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/users/', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           "user": {
             "email": "jadadan@dzban.plwe",
@@ -27,8 +30,9 @@ class RootScreen extends Component {
           }
         })
       });
-      console.log(JSON.stringify(astroApiCall));
-      Alert.alert(JSON.stringify(astroApiCall));
+      const astro = await astroApiCall.text();
+      console.log(astro);
+      Alert.alert(astro);
     } catch(err) {
       console.error(err);
       Alert.alert("Lolek");
