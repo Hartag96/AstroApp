@@ -48,7 +48,7 @@ export default class RegistrationScreen extends Component {
                 //console.log(astro);
                 //Alert.alert(astro);
                 // TODO Redict to home views // Zmienić response i tego ifa
-                if(astro === '{"created":true}') {
+                if(astro === '{"created":true,"errors":[]}') {
                     Alert.alert("Registration successful");
                     this.props.navigation.navigate('Login');
                 } else {
