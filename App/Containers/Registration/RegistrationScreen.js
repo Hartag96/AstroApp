@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Alert, Permissions, Text, View, Button, TextInput, Image } from 'react-native';
+import { ScrollView, StyleSheet, Alert, Permissions, Text, View, Button, TextInput, Image } from 'react-native';
 import styles from './RegistrationStyle';
 
 export default class RegistrationScreen extends Component {
@@ -65,6 +65,7 @@ export default class RegistrationScreen extends Component {
 
     render() {
         return (
+            <ScrollView>
             <View style={styles.container}>
                 <Image
                     style={{width: 200, height: 100}}
@@ -77,6 +78,7 @@ export default class RegistrationScreen extends Component {
                 <TextInput style={styles.passwordInput} onChangeText={(value) => this.setState({confirmpassword: value})} placeholder="Confirm password" secureTextEntry={true}/>
                 <Button title="Sign up" style={styles.frontButton} onPress={this.handlePress.bind(this)} />
             </View>
+            </ScrollView>
         )
     }
 }
