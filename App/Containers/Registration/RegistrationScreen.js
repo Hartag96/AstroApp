@@ -47,6 +47,7 @@ export default class RegistrationScreen extends Component {
                 const astro = await astroApiCall.text();
                 console.log(astro);
                 Alert.alert(astro);
+                // TODO Redict to home views
             } catch (err) {
                 console.error(err);
                 Alert.alert("Lolek");
