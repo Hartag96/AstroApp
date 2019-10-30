@@ -45,9 +45,16 @@ export default class RegistrationScreen extends Component {
                 });
 
                 const astro = await astroApiCall.text();
-                console.log(astro);
-                Alert.alert(astro);
-                // TODO Redict to home views
+                //console.log(astro);
+                //Alert.alert(astro);
+                // TODO Redict to home views // Zmienić response i tego ifa
+                if(astro === '{"created":true}') {
+                    Alert.alert("Registration successful");
+                    this.props.navigation.navigate('Login');
+                } else {
+                    console.log(astro);
+                    Alert.alert(astro);
+                }
             } catch (err) {
                 console.error(err);
                 Alert.alert("Lolek");
