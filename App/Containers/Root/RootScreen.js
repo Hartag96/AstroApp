@@ -1,10 +1,38 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Image } from 'react-native';
+import { StyleSheet, Alert, Permissions, Text, View, Button, TextInput, Image } from 'react-native';
 import styles from './RootScressStyle';
 
 class RootScreen extends Component {
+  constructor() {
+    super();
+    this.state = {
+      view: 0
+    };
+  }
   componentMountDid() {
 
+  }
+
+  handlePress = async () => {
+    try {
+      const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/mobile_test', {
+        method: 'POST',
+        body: JSON.stringify({
+          "user": {
+            "email": "jadadan@dzban.plwe",
+            "password": "1qdadaaz@WSX",
+            "password_confirmation": "1qdadaaz@WSX",
+            "first_name": "Ciekawe czy pojdzie xd",
+            "last_name": "Dzban utworzony :D"
+          }
+        })
+      });
+      console.log(JSON.stringify(astroApiCall));
+      Alert.alert(JSON.stringify(astroApiCall));
+    } catch(err) {
+      console.error(err);
+      Alert.alert("Lolek");
+    }
   }
 
   render() {
@@ -16,8 +44,8 @@ class RootScreen extends Component {
         />
         <TextInput style={styles.mailInput} placeholder="jan@dzban.com"></TextInput>
         <TextInput style={styles.passwordInput} placeholder="password" secureTextEntry={true}></TextInput>
-        <Button title="Log in" style={styles.frontButton}></Button>
-        <Text style={styles.textMargin}>Or</Text>
+        <Button title="Log in" style={styles.frontButton} onPress={this.handlePress.bind(this)}></Button>
+        <Text style={styles.textMargin}>OR</Text>
         <Button title="Sign up" style={styles.frontButton}></Button>
       </View>
     )
