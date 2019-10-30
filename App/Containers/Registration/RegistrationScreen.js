@@ -14,37 +14,43 @@ export default class RegistrationScreen extends Component {
     }
 
     state = {
-        firstname: 'demo',
-        lastname: 'demo',
-        mail: 'demo',
-        password: 'demo',
-        confirmpassword: 'demo'
+        firstname: '',
+        lastname: '',
+        mail: '',
+        password: '', // wymagane bezpieczne hasło
+        confirmpassword: ''
     };
 
     handlePress = async () => {
-        try {
-            const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/users/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    "user": {
-                        "email": this.state.mail,
-                        "password": "1qdadaaz@WSX",
-                        "password_confirmation": "1qdadaaz@WSX",
-                        "first_name": this.state.firstname,
-                        "last_name": this.state.lastname
-                    }
-                })
-            });
+        if(!this.state.firstname || !this.state.lastname || !this.state.password || !this.state.confirmpassword || !this.state.mail){
+            alert("Empty value");
+        } else if((this.state.password !== this.state.confirmpassword) || this.state.password.length < 6){
+            alert("Passwords don't match");
+        } else {
+            try {
+                const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/users/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "user": {
+                            "email": this.state.mail,
+                            "password": this.state.password,
+                            "password_confirmation": this.state.confirmpassword,
+                            "first_name": this.state.firstname,
+                            "last_name": this.state.lastname
+                        }
+                    })
+                });
 
-            const astro = await astroApiCall.text();
-            console.log(astro);
-            Alert.alert(astro);
-        } catch(err) {
-            console.error(err);
-            Alert.alert("Lolek");
+                const astro = await astroApiCall.text();
+                console.log(astro);
+                Alert.alert(astro);
+            } catch (err) {
+                console.error(err);
+                Alert.alert("Lolek");
+            }
         }
     }
 
