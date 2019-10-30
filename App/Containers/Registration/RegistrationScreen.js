@@ -13,7 +13,7 @@ export default class RegistrationScreen extends Component {
                 <TextInput style={styles.mailInput} placeholder="First name"/>
                 <TextInput style={styles.mailInput} placeholder="Last name"/>
                 <TextInput style={styles.mailInput} placeholder="jan@dzban.com"/>
-                <TextInput style={styles.passwordInput} placeholder="password" secureTextEntry={true}/>
+                <TextInput style={styles.passwordInput} placeholder="Password" secureTextEntry={true}/>
                 <TextInput style={styles.passwordInput} placeholder="Confirm password" secureTextEntry={true}/>
                 <Button title="Sign up" style={styles.frontButton}/>
             </View>
