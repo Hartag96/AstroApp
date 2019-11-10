@@ -6,6 +6,7 @@ export default StyleSheet.create({
         backgroundColor: '#FFFFFF',
         alignItems: 'center',
         justifyContent: 'center',
+        color: '#333333'
     },
     textMargin: {
         marginVertical: 5
