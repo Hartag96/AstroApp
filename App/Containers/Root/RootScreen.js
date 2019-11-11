@@ -7,10 +7,10 @@ import { withOrientation } from 'react-navigation';
 
 export default class RootScreen extends Component {
   state = {
-    isModalVisible: false,
+    isModalVisible2: false,
     modalText: 'Success :o',
     modalImage: 'https://png.pngtree.com/svg/20170724/success_405070.png',
-    modalButtonText: 'Close',
+    modalButtonText: 'Try again',
     mail: '',
     password: ''
   };
@@ -32,7 +32,7 @@ export default class RootScreen extends Component {
         modalButtonText: 'Try again'
       });
     }
-    this.setState({ isModalVisible: !this.state.isModalVisible });
+    this.setState({ isModalVisible2: !this.state.isModalVisible });
   };
 
   handlePress = async () => {
@@ -56,7 +56,7 @@ export default class RootScreen extends Component {
             this.toggleModal(false);
           }
       } catch (err) {
-        Alert.alert("kurde");
+        this.toggleModal(false);
       }
   }
 
@@ -81,7 +81,7 @@ export default class RootScreen extends Component {
               this.props.navigation.navigate('Register')
           }/>
         </View>
-        <Modal isVisible={this.state.isModalVisible}>
+        <Modal isVisible={this.state.isModalVisible2}>
           <View style={styles.modal}>
             <Image
               style={{width: 100, height:100}}
