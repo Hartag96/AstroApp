@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button, TextInput, Image, Alert, CheckBox  } from 'react-native';
 import Modal from "react-native-modal";
 import {AsyncStorage} from 'react-native';
+import { withNavigation } from 'react-navigation'
 
 import styles from './EventStyle';
 
-export default class EventScreen extends Component {
+ class EventScreen extends Component {
     constructor(props){
         super(props);
         var isLogged = AsyncStorage.getItem("auth_token")
@@ -16,6 +17,20 @@ export default class EventScreen extends Component {
                 this.setState({isLogged: true, auth_token: value});
                 this.fetchEvent();
             }
+        });
+    }
+
+    static navigationOptions = ({ navigate, navigation }) => ({
+      title: "AstroApp",
+      //headerRight: <Button title="Logout" onPress={()=>{ navigation.navigate('Login'); }} />,
+      headerRight: <Button title="Logout" onPress={ async ()=>{ await AsyncStorage.setItem("auth_token", '').then(() => {
+        navigation.navigate('Login');
+      }); }} />,
+    })
+
+    logoutTest = async () => {
+        await AsyncStorage.setItem("auth_token", '').then(() => {
+            navigation.navigate('Login');
         });
     }
 
@@ -150,3 +165,4 @@ export default class EventScreen extends Component {
         )
     }
 }
+export default withNavigation(EventScreen);

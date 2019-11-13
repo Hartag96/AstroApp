@@ -35,5 +35,8 @@ export default StyleSheet.create({
         padding: 10,
         width: '60%',
         borderColor: '#222222',
+    },
+    logout: {
+        marginRight:50
     }
 });
