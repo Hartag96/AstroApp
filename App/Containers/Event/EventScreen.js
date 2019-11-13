@@ -23,7 +23,8 @@ export default class EventScreen extends Component {
         isLogged: false,
         eventId: '5',
         eventName: 'Lolek',
-        eventDate: '13-11-2019 17:45',
+        eventDate: '2019-11-16T17:45:00',
+        difference: '',
         events: [{
             id: '3',
             title: 'Lunar Eclipse',
@@ -97,12 +98,54 @@ export default class EventScreen extends Component {
         }
     }
 
+    calcDateDiff(){
+        var date1 = new Date().getTime();
+        var date2 = Date.parse(this.state.eventDate);
+
+        console.log(date1);
+        console.log(date2);
+
+        var msec = date2 - date1;
+        var mins = Math.floor(msec / 60000);
+        var hrs = Math.floor(mins / 60);
+        var days = Math.floor(hrs / 24);
+        var yrs = Math.floor(days / 365);
+        mins = mins % 60;
+        hrs = hrs % 24;
+
+        this.setState({difference: days + " days, " + hrs + " hours, " + mins + " minutes"});
+    }
+
+    componentDidMount() {
+        this._interval = setInterval(() => {
+            this.calcDateDiff();
+        }, 1000);
+      }
+      
+      componentWillUnmount() {
+        clearInterval(this._interval);
+      }
+
     render() {
         return (
-            <View isVisible={this.state.isLogged} style={styles.container}>
-               <Text>{this.state.eventName}</Text>
-               <Text>{this.state.eventDate}</Text>
-                    <Button title="Logout" style={styles.frontButton} onPress={this.logout}/>
+            <View isVisible={this.state.isLogged} style="flex: 1;" /*style={styles.container}*/>
+                <View style="flex: 1; flexDirection: 'column'; justifyContent: 'space-between'"/*style={styles.center}*/>
+                    <View style={{width: '100%', height: '53%', flexDirection: 'column', alignContent: 'stretch', justifyContent: 'space-around', alignItems: 'center' }}>
+                        <Image
+                            style={{width: 200, height: 200, marginTop: 5}}
+                            source={{uri: this.state.events[this.state.eventId].image}}
+                        />
+                        <Text style={{fontSize: 28, fontWeight: "bold"}}>{this.state.events[this.state.eventId].title}</Text>
+                        <Text style={{fontSize: 22}}>Time remaining:</Text>
+                        <Text>{this.state.difference}</Text>
+                    </View>
+                    <View style={{width: '100%', height: '40%', flexDirection: 'column', alignContent: 'stretch', justifyContent: 'space-around', alignItems: 'center' }}>
+                        
+                    </View>
+                    <View style={{width: '100%', height: '7%'}}>
+                        <Button title="Save" style={{width: '100%', height: '50%'}} /*style={styles.frontButton}*/ onPress={this.savePreferences}/>
+                    </View>
+                </View>
             </View>
         )
     }

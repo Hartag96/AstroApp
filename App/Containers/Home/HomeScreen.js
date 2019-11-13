@@ -23,47 +23,47 @@ export default class HomeScreen extends Component {
         checkboxes: [{
             id: '3',
             title: 'Lunar Eclipse',
-            checked: false,
+            checked: true,
             image: 'https://raw.githubusercontent.com/turesheim/eclipse-icons/master/icons/source/Eclipse_Luna.png'
           }, {
             id: '4',
             title: 'Solar Eclipse',
-            checked: false,
+            checked: true,
             image: 'https://www.pinclipart.com/picdir/middle/114-1143639_solar-eclipse-comments-icon-png-download.png'
           },{
             id: '5',
             title: 'New Moon',
-            checked: false,
+            checked: true,
             image: 'https://icon-library.net/images/new-moon-icon/new-moon-icon-21.jpg'
           }, {
             id: '1',
             title: 'Meteor Shower',
-            checked: false,
+            checked: true,
             image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQblkqbCak4dKbLUH5BOkQS3PUiP6JAApQYnSJV3r0_pYHEpah6'
           }, {
             id: '2',
             title: 'Full Moon',
-            checked: false,
+            checked: true,
             image: 'http://www.clker.com/cliparts/N/4/r/A/j/Q/full-moon-icon-hi.png'
           }, {
             id: '6',
             title: 'Planetary Event',
-            checked: false,
+            checked: true,
             image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRrLo7jkDytuFi1Vq13s4PuIp1rlqSLSlRrm1UbgIbR1aVxH2Tg'
           }, {
             id: '7',
             title: 'Conjunction',
-            checked: false,
+            checked: true,
             image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ610hzXUeI-4xFOA7kbPTjNyAyTPHM2yAKJgHTu60wm1VcoLsr'
           }, {
             id: '8',
             title: 'Comet',
-            checked: false,
+            checked: true,
             image: 'https://cdn.imgbin.com/13/21/8/imgbin-computer-icons-comet-share-icon-others-4y7iSSmiimiczm2Wj7URpJ7my.jpg'
           }, {
             id: '9',
             title: 'Asteroid',
-            checked: false,
+            checked: true,
             image: 'https://www.jing.fm/clipimg/full/53-539988_asteroid-2-icon-asteroid-icon.png'
           }],
           isModalVisible: false,
