@@ -10,7 +10,7 @@ export default class EventScreen extends Component {
         super(props);
         var isLogged = AsyncStorage.getItem("auth_token")
         .then((value) => {
-            if(value == null || value== undefined|| value== '' ){
+            if(value == null || value == undefined|| value == '' ){
                 this.props.navigation.navigate('Login');
             }else{
                 this.setState({isLogged: true, auth_token: value});
@@ -21,14 +21,67 @@ export default class EventScreen extends Component {
 
     state = {
         isLogged: false,
-        eventId: '',
-        eventName: '',
-        eventDate: ''
+        eventId: '5',
+        eventName: 'Lolek',
+        eventDate: '13-11-2019 17:45',
+        events: [{
+            id: '3',
+            title: 'Lunar Eclipse',
+            checked: false,
+            image: 'https://raw.githubusercontent.com/turesheim/eclipse-icons/master/icons/source/Eclipse_Luna.png'
+          }, {
+            id: '4',
+            title: 'Solar Eclipse',
+            checked: false,
+            image: 'https://www.pinclipart.com/picdir/middle/114-1143639_solar-eclipse-comments-icon-png-download.png'
+          },{
+            id: '5',
+            title: 'New Moon',
+            checked: false,
+            image: 'https://icon-library.net/images/new-moon-icon/new-moon-icon-21.jpg'
+          }, {
+            id: '1',
+            title: 'Meteor Shower',
+            checked: false,
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQblkqbCak4dKbLUH5BOkQS3PUiP6JAApQYnSJV3r0_pYHEpah6'
+          }, {
+            id: '2',
+            title: 'Full Moon',
+            checked: false,
+            image: 'http://www.clker.com/cliparts/N/4/r/A/j/Q/full-moon-icon-hi.png'
+          }, {
+            id: '6',
+            title: 'Planetary Event',
+            checked: false,
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRrLo7jkDytuFi1Vq13s4PuIp1rlqSLSlRrm1UbgIbR1aVxH2Tg'
+          }, {
+            id: '7',
+            title: 'Conjunction',
+            checked: false,
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ610hzXUeI-4xFOA7kbPTjNyAyTPHM2yAKJgHTu60wm1VcoLsr'
+          }, {
+            id: '8',
+            title: 'Comet',
+            checked: false,
+            image: 'https://cdn.imgbin.com/13/21/8/imgbin-computer-icons-comet-share-icon-others-4y7iSSmiimiczm2Wj7URpJ7my.jpg'
+          }, {
+            id: '9',
+            title: 'Asteroid',
+            checked: false,
+            image: 'https://www.jing.fm/clipimg/full/53-539988_asteroid-2-icon-asteroid-icon.png'
+          }]
     }
+    
+    logout = async () => {
+        await AsyncStorage.setItem("auth_token", '').then(() => {
+            this.props.navigation.navigate('Login');
+        });
+    }
+
 
     fetchEvent = async () => {
         try {
-            const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/events/', {
+            const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/my_preferences/', {
               method: 'GET',
               headers: {
                   'Content-Type': 'application/json',
@@ -38,7 +91,8 @@ export default class EventScreen extends Component {
   
             const astro = await astroApiCall.json();
             var firstEvent = astro[0];
-            this.setState({eventId: firstEvent.id, eventName: firstEvent.name, eventDate: firstEvent.date});
+            
+            // this.setState({eventId: firstEvent.id, eventName: firstEvent.name, eventDate: firstEvent.date});
         } catch (err) {
         }
     }
@@ -48,6 +102,7 @@ export default class EventScreen extends Component {
             <View isVisible={this.state.isLogged} style={styles.container}>
                <Text>{this.state.eventName}</Text>
                <Text>{this.state.eventDate}</Text>
+                    <Button title="Logout" style={styles.frontButton} onPress={this.logout}/>
             </View>
         )
     }

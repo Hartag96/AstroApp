@@ -13,7 +13,7 @@ export default class HomeScreen extends Component {
             if(value == null || value == undefined|| value == '' ){
                 this.props.navigation.navigate('Login');
             }else{
-                this.setState({isLogged: true});
+                this.setState({isLogged: true, auth_token: value});
             }
         });
     }
@@ -21,17 +21,50 @@ export default class HomeScreen extends Component {
     state = {
         isLogged: false,
         checkboxes: [{
-            id: 'eclipse',
-            title: 'Eclipse',
+            id: '3',
+            title: 'Lunar Eclipse',
             checked: false,
+            image: 'https://raw.githubusercontent.com/turesheim/eclipse-icons/master/icons/source/Eclipse_Luna.png'
           }, {
-            id: 'moon',
-            title: 'Moon',
+            id: '4',
+            title: 'Solar Eclipse',
             checked: false,
+            image: 'https://www.pinclipart.com/picdir/middle/114-1143639_solar-eclipse-comments-icon-png-download.png'
+          },{
+            id: '5',
+            title: 'New Moon',
+            checked: false,
+            image: 'https://icon-library.net/images/new-moon-icon/new-moon-icon-21.jpg'
           }, {
-            id: 'meteor-shower',
+            id: '1',
             title: 'Meteor Shower',
             checked: false,
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQblkqbCak4dKbLUH5BOkQS3PUiP6JAApQYnSJV3r0_pYHEpah6'
+          }, {
+            id: '2',
+            title: 'Full Moon',
+            checked: false,
+            image: 'http://www.clker.com/cliparts/N/4/r/A/j/Q/full-moon-icon-hi.png'
+          }, {
+            id: '6',
+            title: 'Planetary Event',
+            checked: false,
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRrLo7jkDytuFi1Vq13s4PuIp1rlqSLSlRrm1UbgIbR1aVxH2Tg'
+          }, {
+            id: '7',
+            title: 'Conjunction',
+            checked: false,
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ610hzXUeI-4xFOA7kbPTjNyAyTPHM2yAKJgHTu60wm1VcoLsr'
+          }, {
+            id: '8',
+            title: 'Comet',
+            checked: false,
+            image: 'https://cdn.imgbin.com/13/21/8/imgbin-computer-icons-comet-share-icon-others-4y7iSSmiimiczm2Wj7URpJ7my.jpg'
+          }, {
+            id: '9',
+            title: 'Asteroid',
+            checked: false,
+            image: 'https://www.jing.fm/clipimg/full/53-539988_asteroid-2-icon-asteroid-icon.png'
           }],
           isModalVisible: false,
           modalText: 'Success :o',
@@ -85,32 +118,64 @@ export default class HomeScreen extends Component {
             }
         }
 
-        await AsyncStorage.setItem("preferences", prefString.substring(0, prefString.length - 1)).then( () => {
-            this.showModal('success');
+        var ideki = prefString.substring(0, prefString.length - 1);
+
+        await AsyncStorage.setItem("preferences", ideki).then( () => {
+            this.savePreferencesOnServer(ideki);
         });
+    }
+
+    savePreferencesOnServer = async (str) => {
+        try {
+            const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/set_my_preferences/', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': this.state.auth_token
+              },
+              body: JSON.stringify({
+                  ids: str.split(',')
+              })
+            });
+            this.showModal('success');
+            console.log(str);
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     render() {
         return (
-            <View isVisible={this.state.isLogged} style={styles.container}>
-                <View style={styles.center}>
-                    {
-                        this.state.checkboxes.map((cb) => {
-                            return (
-                                <View key={cb.id} style={{ flexDirection: 'row' }}>
-                                    <CheckBox
-                                    key={cb.id}
-                                    title={cb.title}
-                                    value={cb.checked}
-                                    onChange={() => this.toggleCheckbox(cb.id)} />
-                                    <Text style={{marginTop: 5}}> {cb.title}</Text>
-                                </View>
-                            )
-                        })
-                    }
-
-                    <Button title="Logout" style={styles.frontButton} onPress={this.logout}/>
-                    <Button title="Save" style={styles.frontButton} onPress={this.savePreferences}/>
+            <View isVisible={this.state.isLogged} style="flex: 1;" /*style={styles.container}*/>
+                <View style="flex: 1; flexDirection: 'column'; justifyContent: 'space-between'"/*style={styles.center}*/>
+                    <Text style={{width: '100%', height: '10%', fontSize: 20, padding: 8}}>Select events to follow:</Text>
+                    <View style={{width: '100%', height: '83%', flexDirection: 'column', alignContent: 'stretch', justifyContent: 'space-around', alignItems: 'flex-start' }}>
+                        {
+                            this.state.checkboxes.map((cb) => {
+                                return (
+                                    <View key={cb.id} style={{flex: 1, height: 90, marginLeft: 10, flexDirection: 'row', alignItems: 'center'}}>
+                                        <View>
+                                            <Image
+                                                style={{width: 50, height: 50, margin: 25}}
+                                                source={{uri: cb.image}}
+                                                onPress={() => this.toggleCheckbox(cb.id)}
+                                            />
+                                        </View>
+                                        <View style={{flex: 1, flexDirection:'row'}}>
+                                            <CheckBox
+                                            title={cb.title}
+                                            value={cb.checked}
+                                            onChange={() => this.toggleCheckbox(cb.id)} />
+                                            <Text style={{marginTop: 5}}> {cb.title}</Text>
+                                        </View>
+                                    </View>
+                                )
+                            })
+                        }
+                    </View>
+                    <View style={{width: '100%', height: '7%'}}>
+                        <Button title="Save" style={{width: '100%', height: '50%'}} /*style={styles.frontButton}*/ onPress={this.savePreferences}/>
+                    </View>
                 </View>
                 <Modal isVisible={this.state.isModalVisible}>
                     <View style={styles.modal}>
