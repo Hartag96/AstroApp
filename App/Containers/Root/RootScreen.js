@@ -15,6 +15,10 @@ export default class RootScreen extends Component {
     password: ''
   };
 
+  static navigationOptions = ({ navigate, navigation }) => ({
+    title: "Log in"
+  })
+
   toggleModal = (success) => {
     if(this.state.modalButtonText == 'Close'){
       this.props.navigation.navigate('Home');
@@ -43,7 +47,7 @@ export default class RootScreen extends Component {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              "email": "ja@ty.pl",
+              "email": "test@test.pl",
               "password": "1qaz@WSX"
             })
           });

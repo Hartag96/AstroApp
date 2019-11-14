@@ -72,6 +72,14 @@ export default class HomeScreen extends Component {
           modalButtonText: 'Close'
     }
 
+    static navigationOptions = ({ navigate, navigation }) => ({
+        title: "Settings",
+        //headerRight: <Button title="Logout" onPress={()=>{ navigation.navigate('Login'); }} />,
+        headerRight: <Button title="Logout" onPress={ async ()=>{ await AsyncStorage.setItem("auth_token", '').then(() => {
+          navigation.navigate('Login');
+        }); }} />,
+      })
+
     hideModal = () => {
         this.setState({isModalVisible: false});
         this.props.navigation.navigate('Event');
@@ -127,7 +135,7 @@ export default class HomeScreen extends Component {
 
     savePreferencesOnServer = async (str) => {
         try {
-            const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/set_my_preferences/', {
+            const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/my_preferences/', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
@@ -139,6 +147,8 @@ export default class HomeScreen extends Component {
             });
             this.showModal('success');
             console.log(str);
+            const lol = await astroApiCall.json();
+            console.log('test', JSON.stringify(lol));
         } catch (err) {
             console.log(err);
         }
