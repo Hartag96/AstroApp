@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
 export default StyleSheet.create({
   container: {
@@ -35,5 +35,13 @@ export default StyleSheet.create({
     padding: 10,
     width: '60%',
     borderColor: '#222222',
-  }
+  },
+  activeImageContainer: {
+    flex: 1,
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height / 2,
+    backgroundColor: "#eee",
+    borderBottomWidth: 0.5,
+    borderColor: "#fff"
+   }
 });

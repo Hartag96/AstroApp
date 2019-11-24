@@ -4,26 +4,54 @@ import Modal from "react-native-modal";
 import {AsyncStorage} from 'react-native';
 import styles from './ImgScreenStyle';
 import { withOrientation } from 'react-navigation';
+import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
 
 export default class RootScreen extends Component {
-  state = {
-    isModalVisible2: false,
-    modalText: 'Success :o',
-    modalImage: 'https://png.pngtree.com/svg/20170724/success_405070.png',
-    modalButtonText: 'Try again'
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      hasCameraPermission: null,
+      image: null,
+    }
+  }
+  async componentDidMount() {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL); // CAMERA_ROLL ->	READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
+    this.setState({ hasCameraPermission: status === "granted" });
+  }
+
+  _getPhotoLibrary = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: false,
+     // aspect: [4, 3]
+     base64: true,
+    });
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
+  }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.center}>
-          <Image
-            style={{width: 200, height: 100}}
-            source={{uri: 'https://res-3.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/v1415705305/gbokfpaf2lup8qyz2bva.png'}}
-          />
-
+    const { image, hasCameraPermission } = this.state;
+    if (hasCameraPermission === null) {
+     return <View />
+    }
+    else if (hasCameraPermission === false) {
+     return <Text>Access to camera has been denied.</Text>;
+    }
+    else {
+     return (
+      <View style={{ flex: 1 }}>
+        <View style={styles.activeImageContainer}>
+        {image ? ( <Image source={{ uri: image }} style={{ flex: 1 }} /> ) : (
+         <View />
+        )}
+        </View>
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <Button onPress={this._getPhotoLibrary.bind(this)} title="Photo Picker Screen!"/>
         </View>
       </View>
-    )
-  }
+     );
+    }
+   }
 }
