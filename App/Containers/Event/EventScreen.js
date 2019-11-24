@@ -143,6 +143,7 @@ import styles from './EventStyle';
                         <Text style={{fontSize: 28, fontWeight: "bold", marginTop: 15}}>{this.state.eventName}</Text>
                         <Text style={{fontSize: 22, marginTop: 8}}>Time remaining:</Text>
                         <Text style={{marginTop: 10}}>{this.state.difference}</Text>
+                        <Button title="IMG" style={{width: '100%', height: '50%'}} /*style={styles.frontButton}*/ onPress={() => this.props.navigation.navigate('Img')}/>
                     </View>
                     <View style={{width: '100%', height: '40%', flexDirection: 'column', alignContent: 'stretch', justifyContent: 'space-around', alignItems: 'center', marginTop: 15 }}>
                         
