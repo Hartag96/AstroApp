@@ -13,6 +13,7 @@ export default class RootScreen extends Component {
     this.state = {
       hasCameraPermission: null,
       image: null,
+      base: null,
     }
   }
   async componentDidMount() {
@@ -27,17 +28,17 @@ export default class RootScreen extends Component {
      base64: true,
     });
     if (!result.cancelled) {
-      this.setState({ image: result.uri });
+      this.setState({ image: result.uri, base: result.base64 });
     }
   }
 
   render() {
-    const { image, hasCameraPermission } = this.state;
+    const { image, hasCameraPermission, base64 } = this.state;
     if (hasCameraPermission === null) {
      return <View />
     }
     else if (hasCameraPermission === false) {
-     return <Text>Access to camera has been denied.</Text>;
+     return <Text style={styles.center}>Access to camera has been denied.</Text>;
     }
     else {
      return (
@@ -48,7 +49,7 @@ export default class RootScreen extends Component {
         )}
         </View>
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-          <Button onPress={this._getPhotoLibrary.bind(this)} title="Photo Picker Screen!"/>
+          <Button onPress={this._getPhotoLibrary.bind(this)} title="Share Photo!"/>
         </View>
       </View>
      );
