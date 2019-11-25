@@ -36,7 +36,7 @@ export default StyleSheet.create({
         marginLeft: 20,
         marginRight: 20,
         backgroundColor: '#FFFFFF',
-        flexGrow: 2,
+        flexGrow: 1,
         flexShrink: 1,
         flexBasis: 0,
         flexDirection: 'row',
@@ -44,8 +44,7 @@ export default StyleSheet.create({
       eventDesc: {
         flexBasis: 0,
         flexGrow: 1,
-        flexShrink: 1,
-        fontSize: 13
+        flexShrink: 1
       },
       timeBox: {
         padding: 10,

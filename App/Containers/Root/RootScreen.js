@@ -15,12 +15,19 @@ export default class RootScreen extends Component {
     password: ''
   };
 
+  constructor(props){
+    super(props);
+    AsyncStorage.setItem("preferences", null).then( () => {
+    });
+  }
+
   static navigationOptions = ({ navigate, navigation }) => ({
     title: "Log in"
   })
 
   toggleModal = (success) => {
     if(this.state.modalButtonText == 'Close'){
+      this.setState({ isModalVisible2: !this.state.isModalVisible2 });
       this.props.navigation.navigate('Home');
     }
     if(success){
@@ -36,7 +43,7 @@ export default class RootScreen extends Component {
         modalButtonText: 'Try again'
       });
     }
-    this.setState({ isModalVisible2: !this.state.isModalVisible });
+    this.setState({ isModalVisible2: !this.state.isModalVisible2 });
   };
 
   handlePress = async () => {

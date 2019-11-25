@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Image, Alert, CheckBox  } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Image, Alert, CheckBox, SafeAreaView, ScrollView  } from 'react-native';
+import { Button } from 'react-native-elements';
 import Modal from "react-native-modal";
 import {AsyncStorage} from 'react-native';
 import { withNavigation } from 'react-navigation'
@@ -9,38 +10,87 @@ import styles from './EventStyle';
  class EventScreen extends Component {
     constructor(props){
         super(props);
-        var isLogged = AsyncStorage.getItem("auth_token")
-        .then((value) => {
-            if(value == null || value == undefined|| value == '' ){
-                this.props.navigation.navigate('Login');
-            }else{                
-                this.fetchEvent(value);
 
-                this.setState({isLogged: true, auth_token: value});
-            }
-        });
+        // AsyncStorage.setItem("preferences", "");
+
+        
+        var isLogged = AsyncStorage.getItem("auth_token").then((value) => {
+          if(value == '' || value == null || value == undefined){
+              AsyncStorage.setItem("preferences", null).then( () => {
+              });
+              this.props.navigation.navigate('Authorization');
+          }else{
+            var preferences = AsyncStorage.getItem("preferences").then((pref) => {
+              if(pref === "" || pref === null || pref === undefined){
+                this.props.navigation.navigate('Settings');
+              }else{
+                this.setState({preferences: pref});
+
+              }
+            })
+
+          }
+      })
+
     }
+
 
     static navigationOptions = ({ navigate, navigation }) => ({
-      title: "AstroApp",
-      //headerRight: <Button title="Logout" onPress={()=>{ navigation.navigate('Login'); }} />,
-      headerRight: <Button style={{marginRight: 10}} title="Logout" onPress={ async ()=>{ await AsyncStorage.setItem("auth_token", '').then(() => {
-        navigation.navigate('Login');
-      }); }} />,
+      title: "Event",
+      headerRight: <View>
+            <Button title="All events" onPress={async () => {navigation.navigate('Events')}} />
+              <Button title="Logout" onPress={ async ()=>{ await AsyncStorage.setItem("auth_token", '').then(() => {
+              navigation.navigate('Login');
+            }); }} />
+      </View>
     })
 
-    logoutTest = async () => {
-        await AsyncStorage.setItem("auth_token", '').then(() => {
-            navigation.navigate('Login');
-        });
-    }
-
     state = {
-        isLogged: false,
+        isLogged: true,
         eventId: '4',
         eventName: 'Planetary event',
-        eventDate: '2019-11-16T17:45:00',
+        eventDate: '2019-11-26T17:45:00',
         difference: '',
+        newComment: '',
+        newCommentVisible: false,
+        comments: [
+          {
+            id: 1,
+            author: 'Dawikk',
+            avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
+            comment: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
+          },
+          {
+            id: 2,
+            author: 'Dawikk',
+            avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
+            comment: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
+          },
+          {
+            id: 3,
+            author: 'Dawikk',
+            avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
+            comment: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
+          },
+          {
+            id: 4,
+            author: 'Dawikk',
+            avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
+            comment: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
+          },
+          {
+            id: 5,
+            author: 'Dawikk',
+            avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
+            comment: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
+          },
+          {
+            id: 6,
+            author: 'Dawikk',
+            avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
+            comment: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
+          }
+        ],
         events: {
           '1': {
             image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQblkqbCak4dKbLUH5BOkQS3PUiP6JAApQYnSJV3r0_pYHEpah6'
@@ -79,7 +129,6 @@ import styles from './EventStyle';
         });
     }
 
-
     fetchEvent = async (auth_token) => {
         try {
             const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/my_events/', {
@@ -93,11 +142,8 @@ import styles from './EventStyle';
             const astro = await astroApiCall.json();
             var firstEvent = astro[1];
 
-            console.log('lol', JSON.stringify(firstEvent));
-            
             this.setState({eventId: firstEvent.id, eventName: firstEvent.name, eventDate: firstEvent.date});
-
-            console.log('hej', JSON.stringify(this.state));
+            console.log('okej');
         } catch (err) {
           console.log( err);
         }
@@ -109,8 +155,10 @@ import styles from './EventStyle';
 
         // console.log(date1);
         // console.log(date2);
-
+        
         var msec = date2 - date1;
+        var seconds = ((msec % 60000) / 1000).toFixed(0);
+
         var mins = Math.floor(msec / 60000);
         var hrs = Math.floor(mins / 60);
         var days = Math.floor(hrs / 24);
@@ -118,10 +166,41 @@ import styles from './EventStyle';
         mins = mins % 60;
         hrs = hrs % 24;
 
-        this.setState({difference: days + " days, " + hrs + " hours, " + mins + " minutes"});
+        var secondsS = seconds < 10 ? '0' + seconds : seconds;
+        var minsS = mins < 10 ? '0' + mins : mins;
+        var hrsS = hrs < 10 ? '0' + hrs : hrs;
+        var daysS = days < 10 ? '0' + days : days;
+
+        this.setState({difference: daysS + ":" + hrsS + ":" + minsS + ":" + secondsS});
+    }
+
+    showModal(){
+      this.setState({newCommentVisible: true});
+    }
+
+    hideModal(){
+      this.setState({newCommentVisible: false});
+    }
+
+    addComment(){
+      this.setState({comments: this.state.comments.concat({id: this.state.comments.length + 1, author: 'System', avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png', comment: this.state.newComment})})
+      this.setState({newCommentVisible: false});
+      this.setState({newComment: ''});
+    }
+
+    componentDidUpdate(prevProps) {
+        if(prevProps !== undefined){
+          if(prevProps != null && 
+            prevProps.navigation.state.params.id != this.props.navigation.state.params.id)
+          console.log(this.props.navigation.state.params);      
+        }else{
+          console.log(this.props.navigation.state.params);      
+        }
+        
     }
 
     componentDidMount() {
+      console.log(this.props.navigation.state.params);
         this._interval = setInterval(() => {
             this.calcDateDiff();
         }, 1000);
@@ -133,25 +212,94 @@ import styles from './EventStyle';
 
     render() {
         return (
-            <View isVisible={this.state.isLogged} style="flex: 1;" /*style={styles.container}*/>
-                <View style="flex: 1; flexDirection: 'column'; justifyContent: 'space-between'"/*style={styles.center}*/>
-                    <View style={{width: '100%', height: '53%', flexDirection: 'column', alignContent: 'stretch', justifyContent: 'space-around', alignItems: 'center' }}>
-                        <Image
-                            style={{width: 200, height: 200, marginTop: 20}}
-                            source={{uri: this.state.events['1'].image}}
-                        />
-                        <Text style={{fontSize: 28, fontWeight: "bold", marginTop: 15}}>{this.state.eventName}</Text>
-                        <Text style={{fontSize: 22, marginTop: 8}}>Time remaining:</Text>
-                        <Text style={{marginTop: 10}}>{this.state.difference}</Text>
-                    </View>
-                    <View style={{width: '100%', height: '40%', flexDirection: 'column', alignContent: 'stretch', justifyContent: 'space-around', alignItems: 'center', marginTop: 15 }}>
-                        
-                    </View>
-                    <View style={{width: '100%', height: '7%'}}>
-                        <Button title="Save" style={{width: '100%', height: '50%', marginTop: 15}} /*style={styles.frontButton}*/ onPress={this.savePreferences}/>
-                    </View>
+          <SafeAreaView style={styles.container}>
+            <ScrollView style={styles.contentSection}>
+              <View style={styles.eventBox}>
+                <View style={styles.eventElement}>
+                  <Image
+                    style={{width: 80, height: 80}}
+                    source={{uri: this.state.events['1'].image}}
+                  />
                 </View>
+                <View style={styles.eventElementExt}>
+                  <Text style={styles.eventTitle}>{this.state.eventName}</Text>
+                  <Text style={styles.eventDesc}>Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.</Text>
+                </View>
+              </View>
+              <View style={styles.timeBox}>
+                <Text style={styles.remainingBold}>Time remaining to the event:</Text>
+                <Text style={styles.difference}>{this.state.difference}</Text>
+              </View>
+              <View style={styles.commentsBox}>
+              {
+                  this.state.comments.map((comment) => {
+                  return (
+                    <View key={comment.id} style={styles.commentBox}>
+                      <View style={styles.commentAvatar}>
+                        <Image
+                          style={{width: 40, height: 40}}
+                          source={{uri: comment.avatar}}
+                        />
+                      </View>
+                      <View style={styles.commentContent}>
+                        <Text style={styles.commentAuthor}>
+                          Author: {comment.author}
+                        </Text>
+                        <Text style={styles.commentContent}>
+                          {comment.comment}
+                        </Text>
+                      </View>
+                    </View>
+                      )
+                  })
+              }
+              {/* <View>
+                <Text>Add comment:</Text>
+                <TextInput
+                  multiline={true}
+                  numberOfLines={4}
+                  onChangeText={(text) => this.setState({newComment})}
+                  value={this.state.text} 
+                  style={styles.textarea} />
+              </View> */}
+              </View> 
+            </ScrollView>
+            <View style={styles.addCommentButton}>
+              <Button
+                raised
+                icon={{name: 'add-circle', size: 32, color: '#FFFFFF'}}
+                buttonStyle={{backgroundColor: '#333333', borderRadius: 50}}
+                onPress={this.showModal.bind(this)}
+              />
             </View>
+            <Modal isVisible={this.state.newCommentVisible}>
+              <View style={styles.modal}>
+                <Text style={{paddingBottom: 15, paddingTop: 15, fontSize: 18, fontWeight: 'bold'}}>Add comment:</Text>
+                <TextInput
+                  multiline={true}
+                  numberOfLines={4}
+                  onChangeText={(text) => this.setState({newComment: text})}
+                  value={this.state.text} 
+                  placeholder="Enter your comment..."
+
+                  style={styles.textarea} />
+                <View style={styles.modalButtons}>
+                  <Button
+                    raised
+                    buttonStyle={[styles.modalButton, {backgroundColor: '#333333', borderRadius: 0}]}
+                    title={`Add comment`}
+                    onPress={this.addComment.bind(this)}
+                  />
+                  <Button
+                    raised
+                    buttonStyle={[styles.modalButton, {backgroundColor: '#333333', borderRadius: 0}]}
+                    title={`Close`}
+                    onPress={this.hideModal.bind(this)}
+                  />
+                </View>
+              </View>
+            </Modal>
+          </SafeAreaView>
         )
     }
 }
