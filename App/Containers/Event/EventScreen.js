@@ -46,6 +46,8 @@ import styles from './EventStyle';
         eventId: '4', // id
         eventName: 'Planetary event', // name
         eventDate: '2019-11-29T17:45:00', // date
+        eventType: '', // type
+        eventTypeID: '', // preference_id
         difference: '',
         newComment: '',
         newCommentVisible: false,
@@ -58,18 +60,6 @@ import styles from './EventStyle';
           },
           {
             id: 2,
-            user_email: 'Dawikk',
-            avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
-            content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
-          },
-          {
-            id: 3,
-            user_email: 'Dawikk',
-            avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
-            content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
-          },
-          {
-            id: 4,
             user_email: 'Dawikk',
             avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
             content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
@@ -199,7 +189,7 @@ import styles from './EventStyle';
 
             const astro = await astroApiCall.json();
             var firstEvent = astro.events[0];
-            this.setState({eventId: firstEvent.id, eventName: firstEvent.name, eventDate: firstEvent.date});
+            this.setState({eventId: firstEvent.id, eventName: firstEvent.name, eventDate: firstEvent.date, eventType: firstEvent.type, eventTypeID: firstEvent.preference_id});
           //  console.log('GET name:', firstEvent); // astro.events['0'].name // firstEvent.comments[1]
           this.setState({comments: firstEvent.comments});
         } catch (err) {
