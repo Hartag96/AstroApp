@@ -11,7 +11,7 @@ class AuthorizationView extends Component {
 
 
         var isLogged = AsyncStorage.getItem("auth_token").then((value) => {
-            console.log(value);
+            console.log('Auth_token: ', value);
             if(value === '' || value === null || value === undefined){
                 AsyncStorage.setItem("preferences", null).then( () => {
                 });
@@ -71,7 +71,7 @@ class AuthorizationView extends Component {
                 console.log('Response error POST Login');
             }
         } catch (err) {
-            console.log(JSON.stringify(err));
+            console.log('Err POST Login', JSON.stringify(err));
         }
     }
 
@@ -103,6 +103,7 @@ class AuthorizationView extends Component {
                     console.log('Response error POST Signup');
                 }
             } catch (err) {
+                console.log('Err POST Signup', JSON.stringify(err));
             }
         }
     }
