@@ -8,7 +8,7 @@ import styles from './CreateEventStyle';
 
  class CreateEventView extends Component {
     constructor(props){
-        super(props); 
+        super(props);
     }
 
     state = {
@@ -83,24 +83,24 @@ import styles from './CreateEventStyle';
         var image = 'https://png.pngtree.com/svg/20170724/success_405070.png';
         var btnText = 'Close';
 
-        this.setState({ 
-            isModalVisible: true, 
-            modalText: text, 
+        this.setState({
+            isModalVisible: true,
+            modalText: text,
             modalImage: image,
-            modalButtonText: btnText 
+            modalButtonText: btnText
         });
     };
 
-    toggleCheckbox(id) { 
-        let changedCheckbox = this.state.checkboxes.find((cb) => cb.id === id); 
-        changedCheckbox.checked = !changedCheckbox.checked; 
-        let chkboxes = this.state.checkboxes; 
-        
-        for (let i = 0; i < chkboxes.length; i++) { 
-            if (chkboxes[i].id === id) { chkboxes.splice(i, 1, changedCheckbox); }; 
-        }; 
+    toggleCheckbox(id) {
+        let changedCheckbox = this.state.checkboxes.find((cb) => cb.id === id);
+        changedCheckbox.checked = !changedCheckbox.checked;
+        let chkboxes = this.state.checkboxes;
 
-        this.setState({ checkboxes: chkboxes, }); 
+        for (let i = 0; i < chkboxes.length; i++) {
+            if (chkboxes[i].id === id) { chkboxes.splice(i, 1, changedCheckbox); };
+        };
+
+        this.setState({ checkboxes: chkboxes, });
     }
 
     logout = async () => {
@@ -142,7 +142,7 @@ import styles from './CreateEventStyle';
             // this.showModal('success');
             const lol = await astroApiCall.json();
         } catch (err) {
-            console.log(err);
+            console.log('Err POST my_preferences', err);
         }
     }
 

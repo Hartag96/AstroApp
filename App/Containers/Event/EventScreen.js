@@ -13,7 +13,6 @@ import styles from './EventStyle';
 
         // AsyncStorage.setItem("preferences", "");
 
-        
         var isLogged = AsyncStorage.getItem("auth_token").then((value) => {
           if(value == '' || value == null || value == undefined){
               AsyncStorage.setItem("preferences", null).then( () => {
@@ -25,13 +24,10 @@ import styles from './EventStyle';
                 this.props.navigation.navigate('Settings');
               }else{
                 this.setState({preferences: pref});
-
               }
             })
-
           }
       })
-
     }
 
 
@@ -119,10 +115,9 @@ import styles from './EventStyle';
           '9': {
             image: 'https://www.jing.fm/clipimg/full/53-539988_asteroid-2-icon-asteroid-icon.png'
           }
-      }     
-          
+      }
     }
-    
+
     logout = async () => {
         await AsyncStorage.setItem("auth_token", '').then(() => {
             this.props.navigation.navigate('Login');
@@ -138,14 +133,14 @@ import styles from './EventStyle';
                   'Authorization': auth_token
               }
             });
-  
+
             const astro = await astroApiCall.json();
             var firstEvent = astro[1];
 
             this.setState({eventId: firstEvent.id, eventName: firstEvent.name, eventDate: firstEvent.date});
-            console.log('okej');
+            console.log('okej GET my_events');
         } catch (err) {
-          console.log( err);
+          console.log('Err GET my_events', err);
         }
     }
 
@@ -192,20 +187,19 @@ import styles from './EventStyle';
         if(prevProps !== undefined){
           if(prevProps != null && 
             prevProps.navigation.state.params.id != this.props.navigation.state.params.id)
-          console.log(this.props.navigation.state.params);      
+          console.log('params1:', this.props.navigation.state.params);
         }else{
-          console.log(this.props.navigation.state.params);      
+          console.log('params2:', this.props.navigation.state.params);
         }
-        
     }
 
     componentDidMount() {
-      console.log(this.props.navigation.state.params);
+      console.log('params3:', this.props.navigation.state.params);
         this._interval = setInterval(() => {
             this.calcDateDiff();
         }, 1000);
       }
-      
+
       componentWillUnmount() {
         clearInterval(this._interval);
       }
