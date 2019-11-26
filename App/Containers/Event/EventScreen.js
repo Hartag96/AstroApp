@@ -184,9 +184,9 @@ import styles from './EventStyle';
     }
 
     componentDidUpdate(prevProps) {
-        if(prevProps !== undefined){
+        if(prevProps !== undefined && prevProps.navigation.state.params !== undefined){ // Dodałem warunek, jest ok
           if(prevProps != null && 
-            prevProps.navigation.state.params.id != this.props.navigation.state.params.id)
+            prevProps.navigation.state.params.id != this.props.navigation.state.params.id) // (po świeżym logowaniu) TypeError: undefined is not an object (evaluating 'prevProps.navigation.state.params.id')
           console.log('params1:', this.props.navigation.state.params);
         }else{
           console.log('params2:', this.props.navigation.state.params);
