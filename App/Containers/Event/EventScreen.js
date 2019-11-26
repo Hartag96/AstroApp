@@ -43,6 +43,7 @@ import styles from './EventStyle';
 
     state = {
         isLogged: true,
+        isLoad: false, // TODO Można wyświetlać ekran ładowania póki nie skończy się componentDidMount. Obecnie jest średnio
         eventId: '4', // id
         eventName: 'Planetary event', // name
         eventDate: '2019-11-29T17:45:00', // date
@@ -199,13 +200,6 @@ import styles from './EventStyle';
 
       componentWillUnmount() {
         clearInterval(this._interval);
-      }
-      test() {
-        var id = this.state.eventTypeID;
-        console.log('id:', id);
-        event = this.state.events[id].image;
-        console.log('event url', event);
-        return event;
       }
 
     render() {

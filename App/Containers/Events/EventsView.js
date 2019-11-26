@@ -16,57 +16,38 @@ import styles from './EventsStyle';
         events: [
             {
                 id: '233131',
-                eventType: '3',
-                eventName: 'Lunar Eclipse',
-                eventDesc: 'Lorem xd'
+                preference_id: '3', // preference_id
+                name: 'Lunar Eclipse', // name
+                eventDesc: 'Lorem xd', // brak
+                date: '2022-04-08T20:26:50.969Z'
             },
             {
                 id: '231361',
-                eventType: '1',
-                eventName: 'Lunar Eclipse',
-                eventDesc: 'Lorem xd'
+                preference_id: '1',
+                name: 'Lunar Eclipse',
+                eventDesc: 'Lorem xd',
+                date: '2022-04-08T20:26:50.969Z'
             },
             {
                 id: '231371',
-                eventType: '2',
-                eventName: 'Lunar Eclipse',
-                eventDesc: 'Lorem xd'
+                preference_id: '2',
+                name: 'Lunar Eclipse',
+                eventDesc: 'Lorem xd',
+                date: '2022-04-08T20:26:50.969Z'
             },
             {
                 id: '923131',
-                eventType: '5',
-                eventName: 'Lunar Eclipse',
-                eventDesc: 'Lorem xd'
+                preference_id: '5',
+                name: 'Lunar Eclipse',
+                eventDesc: 'Lorem xd',
+                date: '2022-04-08T20:26:50.969Z'
             },
             {
                 id: '123131',
-                eventType: '3',
-                eventName: 'Lunar Eclipse',
-                eventDesc: 'Lorem xd'
-            },
-            {
-                id: '231310',
-                eventType: '4',
-                eventName: 'Lunar Eclipse',
-                eventDesc: 'Lorem xd'
-            },
-            {
-                id: '2313199',
-                eventType: '3',
-                eventName: 'Lunar Eclipse',
-                eventDesc: 'Lorem xd'
-            },
-            {
-                id: '2313154',
-                eventType: '3',
-                eventName: 'Lunar Eclipse',
-                eventDesc: 'Lorem xd'
-            },
-            {
-                id: '23131532',
-                eventType: '3',
-                eventName: 'Lunar Eclipse',
-                eventDesc: 'Lorem xd'
+                preference_id: '3',
+                name: 'Lunar Eclipse',
+                eventDesc: 'Lorem xd',
+                date: '2022-04-08T20:26:50.969Z'
             }
         ],
         eventTypes: {
@@ -103,12 +84,43 @@ import styles from './EventsStyle';
           modalImage: 'https://png.pngtree.com/svg/20170724/success_405070.png',
           modalButtonText: 'Close'
     }
+    componentDidUpdate(prevProps) {
+        if(prevProps !== undefined && prevProps.navigation.state.params !== undefined){ // Dodałem warunek, jest ok
+          if(prevProps != null && 
+            prevProps.navigation.state.params.id != this.props.navigation.state.params.id) // (po świeżym logowaniu) TypeError: undefined is not an object (evaluating 'prevProps.navigation.state.params.id')
+          console.log('params1:', this.props.navigation.state.params);
+        }else{
+          console.log('params2:', this.props.navigation.state.params);
+        }
+    }
+
+    async componentDidMount() {
+        try {
+            const auth_token = await AsyncStorage.getItem('auth_token');
+            const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/events/', {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': auth_token
+              }
+            });
+
+            const astro = await astroApiCall.json();
+            //var firstEvent = astro.events[0];
+     //       this.setState({eventId: firstEvent.id, eventName: firstEvent.name, eventDate: firstEvent.date, eventType: firstEvent.type, eventTypeID: firstEvent.preference_id});
+          //  console.log('GET name:', firstEvent); // astro.events['0'].name // firstEvent.comments[1]
+          console.log('events:', astro);
+          this.setState({events: astro.events});
+        } catch (err) {
+          console.log('Err GET my_events', err);
+        }
+      }
 
     static navigationOptions = ({ navigate, navigation }) => ({
         title: "Incoming events",
         //headerRight: <Button title="Logout" onPress={()=>{ navigation.navigate('Login'); }} />,
         headerRight: <Button title="Logout" onPress={ async ()=>{ await AsyncStorage.setItem("auth_token", '').then(() => {
-          navigation.navigate('Login');
+          navigation.navigate('Authorization');
         }); }} />,
       })
 
@@ -143,6 +155,10 @@ import styles from './EventsStyle';
         
     }
 
+    dateString(dat) {
+
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -156,17 +172,17 @@ import styles from './EventsStyle';
                                     <TouchableOpacity  key={cb.id} style={[styles.eventBoxChild, {backgroundColor: '#DEE0E5'}]} onPress={() => this.showEvent(cb.id)}>
                                         <View style={styles.eventElement}>
                                             <Image
-                                                style={{width: 50, height: 50}}
-                                                source={{uri: this.state.eventTypes[cb.eventType].image}}
+                                                style={{width: 50, height: 50, minWidth: 50, maxWidth: 50}}
+                                                source={{uri: this.state.eventTypes[cb.preference_id].image}}
                                                 // onPress={() => this.toggleCheckbox(cb.id)}
                                             />
                                         </View>
                                         <View style={styles.eventElementExt}>
                                             <View style={styles.eventTitle}>
-                                                <Text style={styles.eventTitle}>{cb.eventName}</Text>
+                                                <Text style={styles.eventTitle}>{cb.name}</Text>
                                             </View>
                                             <View style={styles.eventDesc}>
-                                                <Text>Lorem ipsum dolor sit omlet.</Text>
+                                                <Text>Date: {cb.date.substring(0,10)}</Text>
                                             </View>
                                         </View>
                                     </TouchableOpacity>
