@@ -36,7 +36,7 @@ class AuthorizationView extends Component {
         confirmpassword: '',
         navigationText: 'Switch to registration.'
     }
-    
+
     static navigationOptions = ({ navigate, navigation }) => ({
         header: null
       })
@@ -58,18 +58,17 @@ class AuthorizationView extends Component {
                   'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                "email": "test@test.pl",
-                "password": "1qaz@WSX"
+                "email": "test@test.pl", // this.state.firstname,
+                "password": "1qaz@WSX" // this.state.password
               })
             });
-  
-            
+
             const response = await astroApiCall.json();
             if(!response.error){
               await AsyncStorage.setItem("auth_token", response.auth_token);
-              this.props.navigation.navigate('Event');   
+              this.props.navigation.navigate('Event');
             }else{
-                console.log('lolek');
+                console.log('Response error POST Login');
             }
         } catch (err) {
             console.log(JSON.stringify(err));
@@ -99,8 +98,9 @@ class AuthorizationView extends Component {
 
                 const response = await astroApiCall.json();
                 if(response.created) {
-                    this.props.navigation.navigate('Event');   
+                    this.props.navigation.navigate('Event');
                 } else {
+                    console.log('Response error POST Signup');
                 }
             } catch (err) {
             }
