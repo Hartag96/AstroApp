@@ -43,48 +43,36 @@ import styles from './EventStyle';
 
     state = {
         isLogged: true,
-        eventId: '4',
-        eventName: 'Planetary event',
-        eventDate: '2019-11-26T17:45:00',
+        eventId: '4', // id
+        eventName: 'Planetary event', // name
+        eventDate: '2019-11-29T17:45:00', // date
         difference: '',
         newComment: '',
         newCommentVisible: false,
         comments: [
           {
-            id: 1,
-            author: 'Dawikk',
+            id: 1, // id
+            user_email: 'Dawikk', // user_email
             avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
-            comment: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
+            content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.' // content
           },
           {
             id: 2,
-            author: 'Dawikk',
+            user_email: 'Dawikk',
             avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
-            comment: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
+            content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
           },
           {
             id: 3,
-            author: 'Dawikk',
+            user_email: 'Dawikk',
             avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
-            comment: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
+            content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
           },
           {
             id: 4,
-            author: 'Dawikk',
+            user_email: 'Dawikk',
             avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
-            comment: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
-          },
-          {
-            id: 5,
-            author: 'Dawikk',
-            avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
-            comment: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
-          },
-          {
-            id: 6,
-            author: 'Dawikk',
-            avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
-            comment: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
+            content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
           }
         ],
         events: {
@@ -166,7 +154,7 @@ import styles from './EventStyle';
         var hrsS = hrs < 10 ? '0' + hrs : hrs;
         var daysS = days < 10 ? '0' + days : days;
 
-        this.setState({difference: daysS + ":" + hrsS + ":" + minsS + ":" + secondsS});
+        this.setState({difference: daysS + " Day(s) " + hrsS + ":" + minsS + ":" + secondsS});
     }
 
     showModal(){
@@ -178,7 +166,7 @@ import styles from './EventStyle';
     }
 
     addComment(){
-      this.setState({comments: this.state.comments.concat({id: this.state.comments.length + 1, author: 'System', avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png', comment: this.state.newComment})})
+      this.setState({comments: this.state.comments.concat({id: this.state.comments.length + 1, user_email: 'System', avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png', content: this.state.newComment})})
       this.setState({newCommentVisible: false});
       this.setState({newComment: ''});
     }
@@ -193,11 +181,30 @@ import styles from './EventStyle';
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
       console.log('params3:', this.props.navigation.state.params);
         this._interval = setInterval(() => {
             this.calcDateDiff();
         }, 1000);
+
+        try {
+            const auth_token = await AsyncStorage.getItem('auth_token');
+            const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/current_event/', {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': auth_token
+              }
+            });
+
+            const astro = await astroApiCall.json();
+            var firstEvent = astro.events[0];
+            this.setState({eventId: firstEvent.id, eventName: firstEvent.name, eventDate: firstEvent.date});
+          //  console.log('GET name:', firstEvent); // astro.events['0'].name // firstEvent.comments[1]
+          this.setState({comments: firstEvent.comments});
+        } catch (err) {
+          console.log('Err GET my_events', err);
+        }
       }
 
       componentWillUnmount() {
@@ -232,15 +239,15 @@ import styles from './EventStyle';
                       <View style={styles.commentAvatar}>
                         <Image
                           style={{width: 40, height: 40}}
-                          source={{uri: comment.avatar}}
+                          source={{uri: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png'}}
                         />
                       </View>
                       <View style={styles.commentContent}>
                         <Text style={styles.commentAuthor}>
-                          Author: {comment.author}
+                          Author: {comment.user_email}
                         </Text>
                         <Text style={styles.commentContent}>
-                          {comment.comment}
+                          {comment.content}
                         </Text>
                       </View>
                     </View>

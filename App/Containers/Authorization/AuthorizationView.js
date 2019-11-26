@@ -11,7 +11,7 @@ class AuthorizationView extends Component {
 
 
         var isLogged = AsyncStorage.getItem("auth_token").then((value) => {
-            console.log('Auth_token: ', value);
+            console.log('Auth_token:', value);
             if(value === '' || value === null || value === undefined){
                 AsyncStorage.setItem("preferences", null).then( () => {
                 });

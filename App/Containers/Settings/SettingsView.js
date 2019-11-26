@@ -69,7 +69,7 @@ import styles from './SettingsStyle';
         title: "Settings",
         //headerRight: <Button title="Logout" onPress={()=>{ navigation.navigate('Login'); }} />,
         headerRight: <Button title="Logout" onPress={ async ()=>{ await AsyncStorage.setItem("auth_token", '').then(() => {
-          navigation.navigate('Login');
+          navigation.navigate('Authorization');
         }); }} />,
       })
 
