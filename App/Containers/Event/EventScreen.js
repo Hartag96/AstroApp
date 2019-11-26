@@ -36,7 +36,7 @@ import styles from './EventStyle';
       headerRight: <View>
             <Button title="All events" onPress={async () => {navigation.navigate('Events')}} />
               <Button title="Logout" onPress={ async ()=>{ await AsyncStorage.setItem("auth_token", '').then(() => {
-              navigation.navigate('Login');
+              navigation.navigate('Authorization');
             }); }} />
       </View>
     })
