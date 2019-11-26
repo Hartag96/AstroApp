@@ -47,7 +47,7 @@ import styles from './EventStyle';
         eventName: 'Planetary event', // name
         eventDate: '2019-11-29T17:45:00', // date
         eventType: '', // type
-        eventTypeID: '', // preference_id
+        eventTypeID: 1, // preference_id
         difference: '',
         newComment: '',
         newCommentVisible: false,
@@ -200,6 +200,13 @@ import styles from './EventStyle';
       componentWillUnmount() {
         clearInterval(this._interval);
       }
+      test() {
+        var id = this.state.eventTypeID;
+        console.log('id:', id);
+        event = this.state.events[id].image;
+        console.log('event url', event);
+        return event;
+      }
 
     render() {
         return (
@@ -209,7 +216,7 @@ import styles from './EventStyle';
                 <View style={styles.eventElement}>
                   <Image
                     style={{width: 80, height: 80}}
-                    source={{uri: this.state.events['1'].image}}
+                    source={{uri: this.state.events[this.state.eventTypeID].image}}
                   />
                 </View>
                 <View style={styles.eventElementExt}>
