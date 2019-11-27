@@ -117,21 +117,25 @@ import styles from './EventStyle';
         // console.log(date2);
 
         var msec = date2 - date1;
-        var seconds = ((msec % 60000) / 1000).toFixed(0);
+        if(msec < 0) {
+          this.setState({difference: "Event ended."});
+        } else {
+          var seconds = ((msec % 60000) / 1000).toFixed(0);
 
-        var mins = Math.floor(msec / 60000);
-        var hrs = Math.floor(mins / 60);
-        var days = Math.floor(hrs / 24);
-        var yrs = Math.floor(days / 365);
-        mins = mins % 60;
-        hrs = hrs % 24;
+          var mins = Math.floor(msec / 60000);
+          var hrs = Math.floor(mins / 60);
+          var days = Math.floor(hrs / 24);
+          var yrs = Math.floor(days / 365);
+          mins = mins % 60;
+          hrs = hrs % 24;
 
-        var secondsS = seconds < 10 ? '0' + seconds : seconds;
-        var minsS = mins < 10 ? '0' + mins : mins;
-        var hrsS = hrs < 10 ? '0' + hrs : hrs;
-        var daysS = days < 10 ? '0' + days : days;
+          var secondsS = seconds < 10 ? '0' + seconds : seconds;
+          var minsS = mins < 10 ? '0' + mins : mins;
+          var hrsS = hrs < 10 ? '0' + hrs : hrs;
+          var daysS = days < 10 ? '0' + days : days;
 
-        this.setState({difference: daysS + " Day(s) " + hrsS + ":" + minsS + ":" + secondsS});
+          this.setState({difference: daysS + " Day(s) " + hrsS + ":" + minsS + ":" + secondsS});
+        }
     }
 
     showModal(){
