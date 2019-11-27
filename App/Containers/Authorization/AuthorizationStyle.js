@@ -72,5 +72,12 @@ export default StyleSheet.create({
     backgroundColor: '#F4F5F7',
     padding: 20,
     width: '80%'
-  }
+  },
+  modal:{
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 20,
+    paddingBottom: 20
+  },
 });

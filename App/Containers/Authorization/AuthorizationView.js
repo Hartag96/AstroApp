@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput, Image, Alert, CheckBox, AsyncStorage } from 'react-native';
 import { Button } from 'react-native-elements';
 import { withNavigation } from 'react-navigation'
+import Modal from "react-native-modal";
 
 import styles from './AuthorizationStyle';
 
@@ -34,7 +35,11 @@ class AuthorizationView extends Component {
         mail: '',
         password: '',
         confirmpassword: '',
-        navigationText: 'Switch to registration.'
+        navigationText: 'Switch to registration.',
+        isModalVisible: false,
+        modalText: 'Success :o',
+        modalImage: 'https://png.pngtree.com/svg/20170724/success_405070.png',
+        modalButtonText: 'Close'
     }
 
     static navigationOptions = ({ navigate, navigation }) => ({
@@ -49,6 +54,37 @@ class AuthorizationView extends Component {
             this.setState({navigationText: 'Switch to login.'})
         }
     }
+
+    hideModal = () => {
+        this.setState({isModalVisible: false});
+    }
+
+    showModal = (type) => {
+        var text = '';
+        var image = 'https://png.pngtree.com/svg/20170818/fail_641019.png';
+        var btnText = 'Try again';
+
+        if(type == 'success') {
+            text = 'Registered!';
+            image = 'https://png.pngtree.com/svg/20170724/success_405070.png';
+            btnText = 'Close';
+        } else if(type == 'passwords') {
+            text = 'Passwords incorrect!';
+        } else if(type == 'empty') {
+            text = 'You have to fill all fields'
+        } else if(type == 'error-login') {
+            text = 'Login or password incorrect.'
+        } else {
+            text = 'Something went wrong'
+        }
+
+        this.setState({
+            isModalVisible: true,
+            modalText: text,
+            modalImage: image,
+            modalButtonText: btnText
+        });
+    };
 
     login = async () => {
         try {
@@ -69,15 +105,19 @@ class AuthorizationView extends Component {
               this.props.navigation.navigate('Event');
             }else{
                 console.log('Response error POST Login');
+                this.showModal('error-login');
             }
         } catch (err) {
             console.log('Err POST Login', JSON.stringify(err));
+            this.showModal('error');
         }
     }
 
     signup = async () => {
         if(!this.state.firstname || !this.state.lastname || !this.state.password || !this.state.confirmpassword || !this.state.mail){
+            this.showModal('empty');
         } else if((this.state.password !== this.state.confirmpassword) || this.state.password.length < 6){
+            this.showModal('passwords');
         } else {
             try {
                 const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/users/', {
@@ -98,13 +138,15 @@ class AuthorizationView extends Component {
 
                 const response = await astroApiCall.json();
                 if(response.created) {
-                    //this.props.navigation.navigate('Authorization');
                     this.setState({ wantToLogin: true });
+                    // this.showModal('success');
                 } else {
                     console.log('Response error POST Signup');
+                    this.showModal('error');
                 }
             } catch (err) {
                 console.log('Err POST Signup', JSON.stringify(err));
+                this.showModal('error');
             }
         }
     }
@@ -159,6 +201,16 @@ class AuthorizationView extends Component {
                         />
                     </View>
                 </View>
+                <Modal isVisible={this.state.isModalVisible}>
+                        <View style={styles.modal}>
+                            <Image
+                            style={{width: 100, height:100}}
+                            source={{uri: this.state.modalImage}}
+                            />
+                            <Text style={{paddingBottom: 15, paddingTop: 15}}>{this.state.modalText}</Text>
+                            <Button stype={{flex: 1}} title={this.state.modalButtonText} onPress={this.hideModal} />
+                        </View>
+                    </Modal>
             </View>
         )
     }
