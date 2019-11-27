@@ -139,13 +139,14 @@ import styles from './EventStyle';
     }
 
     hideModal(){
-      this.setState({newCommentVisible: false});
+      this.setState({newCommentVisible: false, newComment: '', imgurURL: ''});
     }
 
-    addComment = async (auth_token) => {
-      this.setState({comments: this.state.comments.concat({id: this.state.comments.length + 1, user_email: 'System', avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png', content: this.state.newComment, Url: this.state.imgurURL})})
+    addComment = async () => {
+     // this.setState({comments: this.state.comments.concat({id: this.state.comments.length + 1, user_email: 'System', avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png', content: this.state.newComment, Url: this.state.imgurURL})})
       
-      // const auth_token = await AsyncStorage.getItem('auth_token');
+      const auth_token = await AsyncStorage.getItem('auth_token');
+      console.log('imgurAPI:', this.state.imgurURL);
       try {
         const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/comments/', {
           method: 'POST',
@@ -155,17 +156,18 @@ import styles from './EventStyle';
           },
           body: JSON.stringify({
               event_id: this.state.eventId,
-              
+              content: this.state.newComment,
+              url: this.state.imgurURL
           })
         });
         const lol = await astroApiCall.json();
+        console.log('POST comments:', lol);
     } catch (err) {
         console.log('Err POST comments:', err);
     }
       
       this.setState({newCommentVisible: false});
-      this.setState({newComment: ''});
-
+      this.setState({newComment: '', imgurURL: ''});
     }
 
     navigateToEvents = async () => {
