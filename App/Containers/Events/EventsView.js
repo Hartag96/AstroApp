@@ -106,13 +106,9 @@ import styles from './EventsStyle';
             });
 
             const astro = await astroApiCall.json();
-            //var firstEvent = astro.events[0];
-     //       this.setState({eventId: firstEvent.id, eventName: firstEvent.name, eventDate: firstEvent.date, eventType: firstEvent.type, eventTypeID: firstEvent.preference_id});
-          //  console.log('GET name:', firstEvent); // astro.events['0'].name // firstEvent.comments[1]
-          console.log('events:', astro);
-          this.setState({events: astro.events});
+            this.setState({events: astro.events});
         } catch (err) {
-          console.log('Err GET my_events', err);
+          console.log('Err GET events:', err);
         }
       }
 

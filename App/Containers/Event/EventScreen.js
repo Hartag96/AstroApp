@@ -30,7 +30,6 @@ import styles from './EventStyle';
       })
     }
 
-
     static navigationOptions = ({ navigate, navigation }) => ({
       title: "Event",
       headerRight: <View>
@@ -103,33 +102,13 @@ import styles from './EventStyle';
         });
     }
 
-    fetchEvent = async (auth_token) => {
-        try {
-            const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/my_events/', {
-              method: 'GET',
-              headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': auth_token
-              }
-            });
-
-            const astro = await astroApiCall.json();
-            var firstEvent = astro[1];
-
-            this.setState({eventId: firstEvent.id, eventName: firstEvent.name, eventDate: firstEvent.date});
-            console.log('okej GET my_events');
-        } catch (err) {
-          console.log('Err GET my_events', err);
-        }
-    }
-
     calcDateDiff(){
         var date1 = new Date().getTime();
         var date2 = Date.parse(this.state.eventDate);
 
         // console.log(date1);
         // console.log(date2);
-        
+
         var msec = date2 - date1;
         var seconds = ((msec % 60000) / 1000).toFixed(0);
 
@@ -162,11 +141,32 @@ import styles from './EventStyle';
       this.setState({newComment: ''});
     }
 
-    componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps) {
         if(prevProps !== undefined && prevProps.navigation.state.params !== undefined){ // Dodałem warunek, jest ok
           if(prevProps != null && 
-            prevProps.navigation.state.params.id != this.props.navigation.state.params.id) // (po świeżym logowaniu) TypeError: undefined is not an object (evaluating 'prevProps.navigation.state.params.id')
-          console.log('params1:', this.props.navigation.state.params);
+            prevProps.navigation.state.params.id != this.props.navigation.state.params.id) { // (po świeżym logowaniu) TypeError: undefined is not an object (evaluating 'prevProps.navigation.state.params.id')
+            console.log('params1:', this.props.navigation.state.params);
+
+            try {
+              const auth_token = await AsyncStorage.getItem('auth_token');
+              const urlAPI = "https://astro-api-dev.herokuapp.com/events/" + this.props.navigation.state.params.id;
+              const astroApiCall = await fetch(urlAPI, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': auth_token
+                }
+              });
+
+              const astro = await astroApiCall.json();
+              console.log('astro:', astro.event.name);
+              this.setState({eventId: astro.event.id, eventName: astro.event.name, eventDate: astro.event.date,
+                eventType: astro.event.type, eventTypeID: astro.event.preference_id});
+              this.setState({comments: astro.event.comments});
+            } catch (err) {
+              console.log('Err GET events:id', err);
+            }
+          }
         }else{
           console.log('params2:', this.props.navigation.state.params);
         }
@@ -194,7 +194,7 @@ import styles from './EventStyle';
           //  console.log('GET name:', firstEvent); // astro.events['0'].name // firstEvent.comments[1]
           this.setState({comments: firstEvent.comments});
         } catch (err) {
-          console.log('Err GET my_events', err);
+          console.log('Err GET current_event', err);
         }
       }
 
