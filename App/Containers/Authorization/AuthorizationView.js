@@ -98,7 +98,8 @@ class AuthorizationView extends Component {
 
                 const response = await astroApiCall.json();
                 if(response.created) {
-                    this.props.navigation.navigate('Event');
+                    //this.props.navigation.navigate('Authorization');
+                    this.setState({ wantToLogin: true });
                 } else {
                     console.log('Response error POST Signup');
                 }
@@ -134,6 +135,8 @@ class AuthorizationView extends Component {
                     <View style={[styles.bgGray, {display: !this.state.wantToLogin ? 'flex' : 'none'}]}>
                         <Text>Create an account:</Text>
                         <TextInput onChangeText={(value) => this.setState({mail: value})} style={styles.mailInput} placeholder="Email"/>
+                        <TextInput onChangeText={(value) => this.setState({firstname: value})} style={styles.mailInput} placeholder="First name"/>
+                        <TextInput onChangeText={(value) => this.setState({lastname: value})} style={styles.mailInput} placeholder="Last name"/>
                         <TextInput onChangeText={(value) => this.setState({password: value})} style={styles.passwordInput} placeholder="Password" secureTextEntry={true}/>
                         <TextInput onChangeText={(value) => this.setState({confirmpassword: value})} style={styles.passwordInput}  placeholder="Confirm password" secureTextEntry={true}/>
                         <Button
