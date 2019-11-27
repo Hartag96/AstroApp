@@ -4,6 +4,8 @@ import { Button } from 'react-native-elements';
 import Modal from "react-native-modal";
 import {AsyncStorage} from 'react-native';
 import { withNavigation } from 'react-navigation'
+import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
 
 import styles from './EventStyle';
 
@@ -42,6 +44,10 @@ import styles from './EventStyle';
     state = {
         isLogged: true,
         isLoad: false, // TODO Można wyświetlać ekran ładowania póki nie skończy się componentDidMount. Obecnie jest średnio
+        hasCameraPermission: null, // do pickera
+        image: null, // uri zdjęcia (picker)
+        base: null, // base64 zdjęcia (picker)
+        imgurURL: ' ', // zwrotka z API
         eventId: '4', // id
         eventName: 'Planetary event', // name
         eventDate: '2019-11-29T17:45:00', // date
@@ -136,14 +142,69 @@ import styles from './EventStyle';
       this.setState({newCommentVisible: false});
     }
 
-    addComment(){
-      this.setState({comments: this.state.comments.concat({id: this.state.comments.length + 1, user_email: 'System', avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png', content: this.state.newComment})})
+    addComment = async (auth_token) => {
+      this.setState({comments: this.state.comments.concat({id: this.state.comments.length + 1, user_email: 'System', avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png', content: this.state.newComment, Url: this.state.imgurURL})})
+      
+      // const auth_token = await AsyncStorage.getItem('auth_token');
+      try {
+        const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/comments/', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': auth_token
+          },
+          body: JSON.stringify({
+              event_id: this.state.eventId,
+              
+          })
+        });
+        const lol = await astroApiCall.json();
+    } catch (err) {
+        console.log('Err POST comments:', err);
+    }
+      
       this.setState({newCommentVisible: false});
       this.setState({newComment: ''});
+
     }
 
     navigateToEvents = async () => {
       this.props.navigation.navigate('Events');
+    }
+
+    _getPhotoLibrary = async () => {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: false,
+       // aspect: [4, 3]
+       base64: true,
+      });
+      if (!result.cancelled) {
+        this.setState({ image: result.uri, base: result.base64 });
+      }
+
+      const formData = new FormData();
+      formData.append("type", 'base64')
+      formData.append("image", result.base64)
+
+      try {
+        const astroApiCall = await fetch('https://api.imgur.com/3/upload/', {
+            method: 'POST',
+            headers: {
+              "Content-Type": 'multipart/form-data',
+              "Authorization": "Client-ID f05a30dbc8032e3",
+            },
+            body: formData
+        });
+
+        const astro = await astroApiCall.json();
+        if(astro.success) {
+            this.setState({imgurURL: astro.data.link});
+        } else {
+            console.log("Error POST IMGUR");
+        }
+      } catch (err) {
+          console.log("Err POST IMGUR", err);
+      }
     }
 
     async componentDidUpdate(prevProps) {
@@ -178,6 +239,9 @@ import styles from './EventStyle';
 
     async componentDidMount() {
       console.log('params3:', this.props.navigation.state.params);
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL); // CAMERA_ROLL ->	READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
+      this.setState({ hasCameraPermission: status === "granted" });
+      
         this._interval = setInterval(() => {
             this.calcDateDiff();
         }, 1000);
@@ -205,8 +269,16 @@ import styles from './EventStyle';
       componentWillUnmount() {
         clearInterval(this._interval);
       }
-
+/* ---------------------- */
     render() {
+      const { image, hasCameraPermission } = this.state;
+      if (hasCameraPermission === null) {
+        return <View />
+       }
+       else if (hasCameraPermission === false) {
+        return <Text style={styles.accessDenied}>Access to camera has been denied.</Text>;
+       }
+       else {
         return (
           <SafeAreaView style={styles.container}>
             <ScrollView style={styles.contentSection}>
@@ -285,7 +357,18 @@ import styles from './EventStyle';
                   placeholder="Enter your comment..."
 
                   style={styles.textarea} />
+                
+                <View style={{minWidth: '70%', minHeight: '40%', maxHeight: '45%', maxWidth: '90%', marginTop: 10}}>
+                  <Image source={{ uri: image }} style={{width: '100%', height: '100%'}} ></Image>
+                </View>
+                
                 <View style={styles.modalButtons}>
+                  <Button
+                    raised
+                    buttonStyle={[styles.modalButton, {backgroundColor: '#333333', borderRadius: 0}]}
+                    title={`Set image`}
+                    onPress={this._getPhotoLibrary.bind(this)}
+                  />
                   <Button
                     raised
                     buttonStyle={[styles.modalButton, {backgroundColor: '#333333', borderRadius: 0}]}
@@ -316,5 +399,6 @@ import styles from './EventStyle';
           </SafeAreaView>
         )
     }
+  }
 }
 export default withNavigation(EventScreen);

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
 export default StyleSheet.create({
     addCommentButton: {
@@ -133,5 +133,16 @@ export default StyleSheet.create({
           flexGrow: 1,
           flexShrink: 1,
           flexBasis: 'auto'
+        },
+        accessDenied: {
+          fontSize: 22,
+          textAlign: 'center',
+          fontWeight: 'bold'
+        },
+        activeImageContainer: {
+          borderWidth: 0.5,
+          borderColor: "#fff",
+          textAlign: 'center',
+          alignItems: 'center'
         }
 });
