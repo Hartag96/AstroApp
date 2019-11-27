@@ -58,14 +58,14 @@ import styles from './EventStyle';
         newCommentVisible: false,
         comments: [
           {
-            id: 1, // id
+            id: 998, // id
             user_email: 'Dawikk', // user_email
             avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
             content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.', // content
             Url: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png'
           },
           {
-            id: 2,
+            id: 999,
             user_email: 'Dawikk',
             avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
             content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.',
@@ -143,31 +143,33 @@ import styles from './EventStyle';
     }
 
     addComment = async () => {
-     // this.setState({comments: this.state.comments.concat({id: this.state.comments.length + 1, user_email: 'System', avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png', content: this.state.newComment, Url: this.state.imgurURL})})
-      
-      const auth_token = await AsyncStorage.getItem('auth_token');
-      console.log('imgurAPI:', this.state.imgurURL);
-      try {
-        const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/comments/', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              'Authorization': auth_token
-          },
-          body: JSON.stringify({
-              event_id: this.state.eventId,
-              content: this.state.newComment,
-              url: this.state.imgurURL
-          })
-        });
-        const lol = await astroApiCall.json();
-        console.log('POST comments:', lol);
-    } catch (err) {
-        console.log('Err POST comments:', err);
-    }
-      
-      this.setState({newCommentVisible: false});
-      this.setState({newComment: '', imgurURL: ''});
+      if(!this.state.newComment){
+
+      } else {
+        this.setState({comments: this.state.comments.concat({id: this.state.comments.length + 1, user_email: 'System', avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png', content: this.state.newComment, Url: this.state.imgurURL})})
+        // TODO automatyczne pobieranie nowego komentarza z api? Da ię wzbuzić DidUpdate czy trzeba tu dodać nowe zapytanie?
+        const auth_token = await AsyncStorage.getItem('auth_token');
+        try {
+          const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/comments/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': auth_token
+            },
+            body: JSON.stringify({
+                event_id: this.state.eventId,
+                content: this.state.newComment,
+                url: this.state.imgurURL
+            })
+          });
+          const lol = await astroApiCall.json();
+      } catch (err) {
+          console.log('Err POST comments:', err);
+      }
+        
+        this.setState({newCommentVisible: false});
+        this.setState({newComment: '', imgurURL: ' '});
+      }
     }
 
     navigateToEvents = async () => {
