@@ -55,13 +55,15 @@ import styles from './EventStyle';
             id: 1, // id
             user_email: 'Dawikk', // user_email
             avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
-            content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.' // content
+            content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.', // content
+            Url: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png'
           },
           {
             id: 2,
             user_email: 'Dawikk',
             avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
-            content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.'
+            content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.',
+            Url: 'https://www.national-geographic.pl/media/cache/default_view/uploads/media/default/0012/70/nie-uwierzysz-jak-powstalo-najslynniejsze-zdjecie-einsteina-przeczytaj-historie.jpeg'
           }
         ],
         events: {
@@ -242,6 +244,12 @@ import styles from './EventStyle';
                         <Text style={styles.commentContent}>
                           {comment.content}
                         </Text>
+                      </View>
+                      <View style={styles.commentAvatar}>
+                        <Image
+                          style={{width: 40, height: 40}}
+                          source={{uri: comment.Url}}
+                        />
                       </View>
                     </View>
                       )
