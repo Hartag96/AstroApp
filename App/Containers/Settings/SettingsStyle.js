@@ -106,5 +106,8 @@ export default StyleSheet.create({
     textAlign:'center',
     paddingLeft : 10,
     paddingRight : 10
+  },
+  eventDesc: {
+    padding: 10,
   }
 });

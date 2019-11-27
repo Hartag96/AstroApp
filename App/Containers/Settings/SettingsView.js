@@ -17,47 +17,56 @@ import styles from './SettingsStyle';
             id: '3',
             title: 'Lunar Eclipse',
             checked: true,
-            image: 'https://raw.githubusercontent.com/turesheim/eclipse-icons/master/icons/source/Eclipse_Luna.png'
+            image: 'https://raw.githubusercontent.com/turesheim/eclipse-icons/master/icons/source/Eclipse_Luna.png',
+            desc: 'A lunar eclipse occurs when the Moon passes directly behind Earth and into its shadow.'
           }, {
             id: '4',
             title: 'Solar Eclipse',
             checked: true,
-            image: 'https://www.pinclipart.com/picdir/middle/114-1143639_solar-eclipse-comments-icon-png-download.png'
+            image: 'https://www.pinclipart.com/picdir/middle/114-1143639_solar-eclipse-comments-icon-png-download.png',
+            desc: 'A solar eclipse occurs when a portion of the Earth is engulfed in a shadow cast by the Moon which fully or partially blocks sunlight.'
           },{
             id: '5',
             title: 'New Moon',
             checked: true,
-            image: 'https://icon-library.net/images/new-moon-icon/new-moon-icon-21.jpg'
+            image: 'https://icon-library.net/images/new-moon-icon/new-moon-icon-21.jpg',
+            desc: 'The new moon is the first lunar phase, when the Moon and Sun have the same ecliptic longitude.'
           }, {
             id: '1',
             title: 'Meteor Shower',
             checked: true,
-            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQblkqbCak4dKbLUH5BOkQS3PUiP6JAApQYnSJV3r0_pYHEpah6'
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQblkqbCak4dKbLUH5BOkQS3PUiP6JAApQYnSJV3r0_pYHEpah6',
+            desc: 'A meteor shower is a celestial event in which a number of meteors are observed to radiate, or originate, from one point in the night sky.'
           }, {
             id: '2',
             title: 'Full Moon',
             checked: true,
-            image: 'http://www.clker.com/cliparts/N/4/r/A/j/Q/full-moon-icon-hi.png'
+            image: 'http://www.clker.com/cliparts/N/4/r/A/j/Q/full-moon-icon-hi.png',
+            desc: "The full moon is the lunar phase when the Moon appears fully illuminated from Earth's perspective."
           }, {
             id: '6',
             title: 'Planetary Event',
             checked: true,
-            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRrLo7jkDytuFi1Vq13s4PuIp1rlqSLSlRrm1UbgIbR1aVxH2Tg'
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRrLo7jkDytuFi1Vq13s4PuIp1rlqSLSlRrm1UbgIbR1aVxH2Tg',
+            desc: 'Find out why mysteriously quiet solar cycles have astronomers scratching their heads about the nature of our Sun.'
           }, {
             id: '7',
             title: 'Conjunction',
             checked: true,
-            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ610hzXUeI-4xFOA7kbPTjNyAyTPHM2yAKJgHTu60wm1VcoLsr'
+            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ610hzXUeI-4xFOA7kbPTjNyAyTPHM2yAKJgHTu60wm1VcoLsr',
+            desc: 'A conjunction occurs when two astronomical objects or spacecraft have either the same right ascension or the same ecliptic longitude, usually as observed from Earth.'
           }, {
             id: '8',
             title: 'Comet',
             checked: true,
-            image: 'https://cdn.imgbin.com/13/21/8/imgbin-computer-icons-comet-share-icon-others-4y7iSSmiimiczm2Wj7URpJ7my.jpg'
+            image: 'https://cdn.imgbin.com/13/21/8/imgbin-computer-icons-comet-share-icon-others-4y7iSSmiimiczm2Wj7URpJ7my.jpg',
+            desc: 'A comet is an icy, small Solar System body that, when passing close to the Sun, warms and begins to release gases, a process called outgassing.'
           }, {
             id: '9',
             title: 'Asteroid',
             checked: true,
-            image: 'https://www.jing.fm/clipimg/full/53-539988_asteroid-2-icon-asteroid-icon.png'
+            image: 'https://www.jing.fm/clipimg/full/53-539988_asteroid-2-icon-asteroid-icon.png',
+            desc: 'Asteroids are minor planets, especially of the inner Solar System. Larger asteroids have also been called planetoids.'
           }],
           isModalVisible: false,
           modalText: 'Success :o',
@@ -170,7 +179,7 @@ import styles from './SettingsStyle';
                                                     <Text style={styles.eventTitle}>{cb.title}</Text>
                                                 </View>
                                                 <View style={styles.eventDesc}>
-                                                    <Text>Lorem ipsum dolor sit omlet.</Text>
+                                                    <Text>{cb.desc}</Text>
                                                 </View>
                                                 <View style={styles.eventCheck}>
                                                     <CheckBox
