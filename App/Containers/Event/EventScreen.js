@@ -159,7 +159,6 @@ import styles from './EventStyle';
               });
 
               const astro = await astroApiCall.json();
-              console.log('astro:', astro.event.name);
               this.setState({eventId: astro.event.id, eventName: astro.event.name, eventDate: astro.event.date,
                 eventType: astro.event.type, eventTypeID: astro.event.preference_id});
               this.setState({comments: astro.event.comments});
