@@ -67,7 +67,6 @@ import styles from './SettingsStyle';
 
     static navigationOptions = ({ navigate, navigation }) => ({
         title: "Settings",
-        //headerRight: <Button title="Logout" onPress={()=>{ navigation.navigate('Login'); }} />,
         headerRight: <Button title="Logout" onPress={ async ()=>{ await AsyncStorage.setItem("auth_token", '').then(() => {
           navigation.navigate('Authorization');
         }); }} />,
@@ -83,15 +82,15 @@ import styles from './SettingsStyle';
         var image = 'https://png.pngtree.com/svg/20170724/success_405070.png';
         var btnText = 'Close';
 
-        this.setState({ 
-            isModalVisible: true, 
-            modalText: text, 
+        this.setState({
+            isModalVisible: true,
+            modalText: text,
             modalImage: image,
-            modalButtonText: btnText 
+            modalButtonText: btnText
         });
     };
 
-    toggleCheckbox(id) { 
+    toggleCheckbox(id) {
         let changedCheckbox = this.state.checkboxes.find((cb) => cb.id === id); 
         changedCheckbox.checked = !changedCheckbox.checked; 
         let chkboxes = this.state.checkboxes; 

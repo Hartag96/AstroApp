@@ -33,7 +33,6 @@ import styles from './EventStyle';
     static navigationOptions = ({ navigate, navigation }) => ({
       title: "Event",
       headerRight: <View>
-            <Button title="All events" onPress={async () => {navigation.navigate('Events')}} />
               <Button title="Logout" onPress={ async ()=>{ await AsyncStorage.setItem("auth_token", '').then(() => {
               navigation.navigate('Authorization');
             }); }} />
@@ -139,6 +138,10 @@ import styles from './EventStyle';
       this.setState({comments: this.state.comments.concat({id: this.state.comments.length + 1, user_email: 'System', avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png', content: this.state.newComment})})
       this.setState({newCommentVisible: false});
       this.setState({newComment: ''});
+    }
+
+    navigateToEvents = async () => {
+      this.props.navigation.navigate('Events');
     }
 
     async componentDidUpdate(prevProps) {
@@ -290,6 +293,18 @@ import styles from './EventStyle';
                 </View>
               </View>
             </Modal>
+
+            <View style={styles.bottomSection}>
+                    <View style={styles.navigation}>
+                    <Button
+                        raised
+                        buttonStyle={{backgroundColor: '#222222', borderRadius: 0, paddingBottom: 20}}
+                        textStyle={{textAlign: 'center'}}
+                        title="All events"
+                        onPress={this.navigateToEvents.bind(this)}
+                        />
+                    </View>
+                </View>
           </SafeAreaView>
         )
     }

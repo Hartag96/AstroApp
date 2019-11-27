@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
     addCommentButton: {
         position: 'absolute',
-        bottom: 5,
+        bottom: 55,
         right: 5
     },
     
@@ -117,5 +117,21 @@ export default StyleSheet.create({
         },
         modalButton: {
             margin: 5
+        },
+        bottomSection: {
+          flexGrow: 0,
+          flexShrink: 1,
+          flexBasis: 'auto',
+          flexDirection: 'row',
+          flexWrap: 'nowrap',
+          justifyContent: 'flex-start',
+          alignItems: 'stretch',
+          alignContent: 'stretch',
+        },
+        navigation:{
+          width: '100%',
+          flexGrow: 1,
+          flexShrink: 1,
+          flexBasis: 'auto'
         }
 });
