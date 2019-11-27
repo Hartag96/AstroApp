@@ -62,14 +62,14 @@ import styles from './EventStyle';
             user_email: 'Dawikk', // user_email
             avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
             content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.', // content
-            Url: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png'
+            url: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png'
           },
           {
             id: 999,
             user_email: 'Dawikk',
             avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png',
             content: 'Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.',
-            Url: 'https://www.national-geographic.pl/media/cache/default_view/uploads/media/default/0012/70/nie-uwierzysz-jak-powstalo-najslynniejsze-zdjecie-einsteina-przeczytaj-historie.jpeg'
+            url: 'https://www.national-geographic.pl/media/cache/default_view/uploads/media/default/0012/70/nie-uwierzysz-jak-powstalo-najslynniejsze-zdjecie-einsteina-przeczytaj-historie.jpeg'
           }
         ],
         events: {
@@ -146,7 +146,7 @@ import styles from './EventStyle';
       if(!this.state.newComment){
 
       } else {
-        this.setState({comments: this.state.comments.concat({id: this.state.comments.length + 1, user_email: 'System', avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png', content: this.state.newComment, Url: this.state.imgurURL})})
+        this.setState({comments: this.state.comments.concat({id: this.state.comments.length + 1, user_email: 'System', avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png', content: this.state.newComment, url: this.state.imgurURL})})
         // TODO automatyczne pobieranie nowego komentarza z api? Da ię wzbuzić DidUpdate czy trzeba tu dodać nowe zapytanie?
         const auth_token = await AsyncStorage.getItem('auth_token');
         try {
@@ -324,7 +324,7 @@ import styles from './EventStyle';
                       <View style={styles.commentAvatar}>
                         <Image
                           style={{width: 40, height: 40}}
-                          source={{uri: comment.Url}}
+                          source={{uri: comment.url}}
                         />
                       </View>
                     </View>
