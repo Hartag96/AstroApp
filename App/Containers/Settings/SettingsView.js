@@ -71,7 +71,8 @@ import styles from './SettingsStyle';
             id: '10',
             title: 'User event',
             checked: true,
-            image: 'https://forums.unraid.net/applications/core/interface/imageproxy/imageproxy.php?img=http://i.imgur.com/TxGPjwu.png&key=f0c451f46385d84efe339aac6453af811fbaee80916423c49ca14824b5bd7411'
+            image: 'https://forums.unraid.net/applications/core/interface/imageproxy/imageproxy.php?img=http://i.imgur.com/TxGPjwu.png&key=f0c451f46385d84efe339aac6453af811fbaee80916423c49ca14824b5bd7411',
+            desc: 'Event create by users.'
           }],
           isModalVisible: false,
           modalText: 'Success :o',
