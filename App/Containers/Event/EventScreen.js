@@ -406,7 +406,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
                 </View>
                 <View style={styles.eventElementExt}>
                   <Text style={styles.eventTitle}>{ this.state.eventName == '' || this.state.eventName == null ? 'User event' : this.state.eventName}</Text>
-                  <Text style={styles.eventDesc}>Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.</Text>
+                  <Text style={styles.eventDesc}>W tym miejscu w przyszłości pojawić będą się opisy wydarzeń.</Text>
                 </View>
               </View>
               <View style={styles.timeBox}>
