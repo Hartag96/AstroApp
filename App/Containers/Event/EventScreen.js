@@ -204,14 +204,14 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
           this.setState({difference: daysS + " Day(s) " + hrsS + ":" + minsS + ":" + secondsS});
         }
 
- //   }
+    }
 
     showModal(){
       this.setState({newCommentVisible: true});
     }
 
     hideModal(){
-      this.setState({newCommentVisible: false, newComment: '', imgurURL: ''});
+      this.setState({newCommentVisible: false, newComment: '', imgurURL: '', image: null});
     }
 
     addComment = async () => {
@@ -436,7 +436,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
                       </View>
                       <View style={styles.commentImage}>
                         {
-                          comment.url != null && comment.url != '' ?
+                          comment.url != null && comment.url != '' && comment.url != ' ' ?
                             (
 
                               <TouchableOpacity style={styles.commentAvatar} onPress={() => this.showImage(comment.user_email, comment.url)} >

@@ -95,8 +95,8 @@ class AuthorizationView extends Component {
                   'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                "email": "test@test.pl", // this.state.firstname,
-                "password": "1qaz@WSX" // this.state.password
+                "email": this.state.firstname, //  "test@test.pl",
+                "password": this.state.password // "1qaz@WSX" 
               })
             });
 
@@ -105,7 +105,7 @@ class AuthorizationView extends Component {
               await AsyncStorage.setItem("auth_token", response.auth_token);
               this.props.navigation.navigate('Event');
             }else{
-                console.log('Response error POST Login');
+                console.log('Response error POST Login:', response);
                 this.showModal('error-login');
             }
         } catch (err) {
