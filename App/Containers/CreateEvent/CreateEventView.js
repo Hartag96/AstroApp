@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput, Image, Alert, CheckBox, SafeAreaView
 import {AsyncStorage} from 'react-native';
 import { withNavigation } from 'react-navigation'
 import { Button, SocialIcon } from 'react-native-elements';
+import DatePicker from 'react-native-datepicker'
 
 import styles from './CreateEventStyle';
 
@@ -12,7 +13,11 @@ import styles from './CreateEventStyle';
     }
 
     state = {
+        eventName: '',
+        eventDate: '',
+        eventDesc: '',
         isLogged: false,
+        date:"2019-11-28",
         checkboxes: [{
             id: '3',
             title: 'Lunar Eclipse',
@@ -58,24 +63,29 @@ import styles from './CreateEventStyle';
             title: 'Asteroid',
             checked: true,
             image: 'https://www.jing.fm/clipimg/full/53-539988_asteroid-2-icon-asteroid-icon.png'
+          }, {
+            id: '10',
+            title: 'User event',
+            checked: true,
+            image: 'https://forums.unraid.net/applications/core/interface/imageproxy/imageproxy.php?img=http://i.imgur.com/TxGPjwu.png&key=f0c451f46385d84efe339aac6453af811fbaee80916423c49ca14824b5bd7411'
           }],
           isModalVisible: false,
-          modalText: 'Success :o',
+          modalText: 'Event created :o',
           modalImage: 'https://png.pngtree.com/svg/20170724/success_405070.png',
           modalButtonText: 'Close'
     }
 
     static navigationOptions = ({ navigate, navigation }) => ({
-        title: "Settings",
+        title: "Create event",
         //headerRight: <Button title="Logout" onPress={()=>{ navigation.navigate('Login'); }} />,
         headerRight: <Button title="Logout" onPress={ async ()=>{ await AsyncStorage.setItem("auth_token", '').then(() => {
-          navigation.navigate('Login');
+          navigation.navigate('Authorization');
         }); }} />,
       })
 
     hideModal = () => {
         this.setState({isModalVisible: false});
-        this.props.navigation.navigate('Event');
+        this.props.navigation.navigate('Events', {});
     }
 
     showModal = (type) => {
@@ -91,21 +101,9 @@ import styles from './CreateEventStyle';
         });
     };
 
-    toggleCheckbox(id) {
-        let changedCheckbox = this.state.checkboxes.find((cb) => cb.id === id);
-        changedCheckbox.checked = !changedCheckbox.checked;
-        let chkboxes = this.state.checkboxes;
-
-        for (let i = 0; i < chkboxes.length; i++) {
-            if (chkboxes[i].id === id) { chkboxes.splice(i, 1, changedCheckbox); };
-        };
-
-        this.setState({ checkboxes: chkboxes, });
-    }
-
     logout = async () => {
         await AsyncStorage.setItem("auth_token", '').then(() => {
-            this.props.navigation.navigate('Login');
+            this.props.navigation.navigate('Login', {});
         });
     }
 
@@ -125,6 +123,34 @@ import styles from './CreateEventStyle';
         await AsyncStorage.setItem("preferences", ideki).then( () => {
             this.savePreferencesOnServer(ideki);
         });
+    }
+
+    goToEvents(){
+        this.props.navigation.navigate('Events', {});
+    }
+
+    addEvent = async () => {
+        try {
+            console.log(this.state.date);
+            const auth_token = await AsyncStorage.getItem('auth_token');
+            const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/events/', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': auth_token
+              },
+              body: JSON.stringify({
+                  "name" : this.state.eventName,
+                  "date" : this.state.date
+              })
+            });
+            // this.showModal('success');
+            const lol = await astroApiCall.json();
+            console.log('dda', JSON.stringify(lol));
+        } catch (err) {
+            console.log('Err POST my_preferences', err);
+        }
+
     }
 
     savePreferencesOnServer = async (str) => {
@@ -152,51 +178,60 @@ import styles from './CreateEventStyle';
                 <View style={styles.topSection}>
                     <SafeAreaView>
                         <ScrollView>
-                         <Text style={styles.settingsTitle}>Select events to follow:</Text>
-                            <View style={styles.eventBox}>
-                            {
-                                this.state.checkboxes.map((cb) => {
-                                return (
-                                        <TouchableOpacity  key={cb.id} style={[styles.eventBoxChild, {backgroundColor: cb.checked ? '#DEE0E5' : '#FFFFFF'}]} onPress={() => this.toggleCheckbox(cb.id)}>
-                                            <View style={styles.eventElement}>
-                                                <Image
-                                                    style={{width: 50, height: 50}}
-                                                    source={{uri: cb.image}}
-                                                    onPress={() => this.toggleCheckbox(cb.id)}
-                                                />
-                                            </View>
-                                            <View style={styles.eventElementExt}>
-                                                <View style={styles.eventTitle}>
-                                                    <Text style={styles.eventTitle}>{cb.title}</Text>
-                                                </View>
-                                                <View style={styles.eventDesc}>
-                                                    <Text>Lorem ipsum dolor sit omlet.</Text>
-                                                </View>
-                                                <View style={styles.eventCheck}>
-                                                    <CheckBox
-                                                    title={cb.title}
-                                                    value={cb.checked}
-                                                    onChange={() => this.toggleCheckbox(cb.id)} />
-                                                </View>
-                                            </View>
-                                        </TouchableOpacity>
-                                    )
-                                })
-                            }
+                            <View style={[styles.bgGray]}>
+                                <Text style={styles.mainText}>Enter event infos:</Text>
+                                <TextInput onChangeText={(value) => this.setState({eventName: value})} style={styles.mailInput} placeholder="Enter event name..."/>
+                                <TextInput 
+                                    multiline={true}
+                                    numberOfLines={4} 
+                                    onChangeText={(value) => this.setState({eventDesc: value})} 
+                                    style={styles.mailInput} placeholder="Enter event description..." 
+                                />
+                                <DatePicker
+                                    style={{width: '100%'}}
+                                    date={this.state.date}
+                                    mode="date"
+                                    placeholder="Select date"
+                                    format="DD-MM-YYYY"
+                                    minDate="28-11-2019"
+                                    maxDate="28-11-2099"
+                                    confirmBtnText="Confirm"
+                                    cancelBtnText="Cancel"
+                                    customStyles={{
+                                    dateIcon: {
+                                        position: 'absolute',
+                                        left: 0,
+                                        top: 4,
+                                        marginLeft: 0
+                                    },
+                                    dateInput: {
+                                        marginLeft: 36,
+                                        marginBottom: 10,
+                                        marginTop: 10
+                                    }
+                                    }}
+                                    onDateChange={(date) => {this.setState({date: date})}}
+                                />
+                                <Button
+                                    raised
+                                    buttonStyle={{backgroundColor: '#333333', borderRadius: 0, marginTop: 5}}
+                                    textStyle={{textAlign: 'center'}}
+                                    title="Create event..."
+                                    onPress={this.addEvent.bind(this)}
+                                />
                             </View>
                         </ScrollView>
                     </SafeAreaView>
-                     
                 </View>
                 <View style={styles.bottomSection}>
                     <View style={styles.navigation}>
-                    <Button
-                        raised
-                        buttonStyle={{backgroundColor: '#222222', borderRadius: 0,paddingBottom: 20}}
-                        textStyle={{textAlign: 'center'}}
-                        title="Save preferences"
-                        onPress={this.savePreferences.bind(this)}
-                        />
+                        <Button
+                            raised
+                            buttonStyle={{backgroundColor: '#222222', borderRadius: 0,paddingBottom: 10}}
+                            textStyle={{textAlign: 'center'}}
+                            title="Back to events..."
+                            onPress={this.goToEvents.bind(this)}
+                            />
                     </View>
                 </View>
             </View>

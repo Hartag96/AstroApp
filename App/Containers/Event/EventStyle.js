@@ -63,21 +63,26 @@ export default StyleSheet.create({
         backgroundColor: '#FFFFFF'
       },
       commentBox: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'flex-start',
         backgroundColor: '#F4F5F7',
-        padding: 5,
+        padding: 2,
         marginBottom: 5,
-        opacity: 0.9
+      },
+      commentWrap: {
+        padding: 5,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
       },
       commentAvatar: {
-          marginRight: 10
+        padding: 2
       },
 
       commentContent:{
           flexBasis: 0,
           flexGrow: 1,
-          flexShrink: 1
+          flexShrink: 1,
+          padding: 5
       },
         eventElement: {
             alignItems: 'center',
