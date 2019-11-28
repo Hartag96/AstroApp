@@ -13,15 +13,16 @@ class AuthorizationView extends Component {
 
         var isLogged = AsyncStorage.getItem("auth_token").then((value) => {
             console.log('Auth_token:', value);
+
             if(value === '' || value === null || value === undefined){
                 AsyncStorage.setItem("preferences", null).then( () => {
                 });
             }else{
                 var preferences = AsyncStorage.getItem("preferences").then((value) => {
                     if( value === "" || value === null || value === undefined){
-                        this.props.navigation.navigate('Event', {});
-                    }else{
                         this.props.navigation.navigate('Settings', {});
+                    }else{
+                        this.props.navigation.navigate('Event', {});
                     }
                 })
             }

@@ -6,8 +6,10 @@ import {AsyncStorage} from 'react-native';
 import { withNavigation } from 'react-navigation'
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
+import ImageView from 'react-native-image-view';
 
 import styles from './EventStyle';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
  class EventScreen extends Component {
     constructor(props){
@@ -35,6 +37,52 @@ import styles from './EventStyle';
     static navigationOptions = ({ navigate, navigation }) => ({
       title: "Event",
       headerRight: <View>
+      <Button title="Reload" onPress={ async ()=>{ 
+        var link = 'https://astro-api-dev.herokuapp.com/current_event/';
+        if(navigation.state.params !== undefined && navigation.state.params.length > 0){
+          link = "https://astro-api-dev.herokuapp.com/events/" + navigation.state.params.id;
+          
+          try {
+            const auth_token = await AsyncStorage.getItem('auth_token');
+            const urlAPI = link;
+            const astroApiCall = await fetch(urlAPI, {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': auth_token
+              }
+            });
+
+            const astro = await astroApiCall.json();
+            this.setState({eventId: astro.event.id, eventName: astro.event.name, eventDate: astro.event.date,
+              eventType: astro.event.type, eventTypeID: astro.event.preference_id});
+            this.setState({comments: astro.event.comments});
+          } catch (err) {
+            console.log('Err GET events:id', err);
+          }
+          
+        }else{
+          try {
+            const auth_token = await AsyncStorage.getItem('auth_token');
+            const astroApiCall = await fetch(link, {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': auth_token
+              }
+            });
+
+            const astro = await astroApiCall.json();
+            var firstEvent = astro.events[0];
+            this.setState({eventId: firstEvent.id, eventName: firstEvent.name, eventDate: firstEvent.date, eventType: firstEvent.type, eventTypeID: firstEvent.preference_id});
+            //  console.log('GET name:', firstEvent); // astro.events['0'].name // firstEvent.comments[1]
+            this.setState({comments: firstEvent.comments});
+          } catch (err) {
+            console.log('Err GET current_event', err);
+          }
+        }
+        }} />
+        
               <Button title="Logout" onPress={ async ()=>{ await AsyncStorage.setItem("auth_token", '').then(() => {
               navigation.navigate('Authorization');
             }); }} />
@@ -56,6 +104,15 @@ import styles from './EventStyle';
         difference: '',
         newComment: '',
         newCommentVisible: false,
+        isImageViewVisible: false,
+        images: [
+          {
+              source: {
+                  uri: 'https://cdn.pixabay.com/photo/2017/08/17/10/47/paris-2650808_960_720.jpg',
+              },
+              title: 'Comment'
+          },
+      ],
         comments: [
           {
             id: 998, // id
@@ -99,6 +156,9 @@ import styles from './EventStyle';
           },
           '9': {
             image: 'https://www.jing.fm/clipimg/full/53-539988_asteroid-2-icon-asteroid-icon.png'
+          },
+          '10': {
+            image: 'https://forums.unraid.net/applications/core/interface/imageproxy/imageproxy.php?img=http://i.imgur.com/TxGPjwu.png&key=f0c451f46385d84efe339aac6453af811fbaee80916423c49ca14824b5bd7411'
           }
       }
     }
@@ -117,9 +177,9 @@ import styles from './EventStyle';
         // console.log(date2);
 
         var msec = date2 - date1;
-        if(msec < 0) {
-          this.setState({difference: "Event ended."});
-        } else {
+  //      if(msec < 0) {
+     //     this.setState({difference: "Event ended."});
+    //    } else {
           var seconds = ((msec % 60000) / 1000).toFixed(0);
 
           var mins = Math.floor(msec / 60000);
@@ -134,9 +194,17 @@ import styles from './EventStyle';
           var hrsS = hrs < 10 ? '0' + hrs : hrs;
           var daysS = days < 10 ? '0' + days : days;
 
+        if(msec < 0){
+          var secondsS = Math.abs(seconds) < 10 ? '0' + Math.abs(seconds) : Math.abs(seconds);
+          var minsS = Math.abs(mins) < 10 ? '0' + Math.abs(mins) : Math.abs(mins);
+          var hrsS = Math.abs(hrs) < 10 ? '0' + Math.abs(hrs) : Math.abs(hrs);
+          var daysS = Math.abs(days) < 10 ? '0' + Math.abs(days) : Math.abs(days);
+          this.setState({difference: "-" + daysS + " Day(s) " + hrsS + ":" + minsS + ":" + secondsS});
+        }else{
           this.setState({difference: daysS + " Day(s) " + hrsS + ":" + minsS + ":" + secondsS});
         }
-    }
+
+ //   }
 
     showModal(){
       this.setState({newCommentVisible: true});
@@ -150,7 +218,7 @@ import styles from './EventStyle';
       if(!this.state.newComment){
 
       } else {
-        this.setState({comments: this.state.comments.concat({id: this.state.comments.length + 1, user_email: 'System', avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png', content: this.state.newComment, url: this.state.imgurURL})})
+        this.setState({comments: this.state.comments.concat({id: this.state.comments.length + 2, user_email: 'System', avatar: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png', content: this.state.newComment, url: this.state.imgurURL})})
         // TODO automatyczne pobieranie nowego komentarza z api? Da ię wzbuzić DidUpdate czy trzeba tu dodać nowe zapytanie?
         const auth_token = await AsyncStorage.getItem('auth_token');
         try {
@@ -240,8 +308,6 @@ import styles from './EventStyle';
               console.log('Err GET events:id', err);
             }
           }
-        }else{
-          console.log('params2:', this.props.navigation.state.params);
         }
     }
 
@@ -254,9 +320,33 @@ import styles from './EventStyle';
             this.calcDateDiff();
         }, 1000);
 
-        try {
+        var link = 'https://astro-api-dev.herokuapp.com/current_event/';
+        if(this.props.navigation.state.params !== undefined && this.props.navigation.state.params.length > 0){
+          link = "https://astro-api-dev.herokuapp.com/events/" + this.props.navigation.state.params.id;
+          
+          try {
             const auth_token = await AsyncStorage.getItem('auth_token');
-            const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/current_event/', {
+            const urlAPI = link;
+            const astroApiCall = await fetch(urlAPI, {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': auth_token
+              }
+            });
+
+            const astro = await astroApiCall.json();
+            this.setState({eventId: astro.event.id, eventName: astro.event.name, eventDate: astro.event.date,
+              eventType: astro.event.type, eventTypeID: astro.event.preference_id});
+            this.setState({comments: astro.event.comments});
+          } catch (err) {
+            console.log('Err GET events:id', err);
+          }
+          
+        }else{
+          try {
+            const auth_token = await AsyncStorage.getItem('auth_token');
+            const astroApiCall = await fetch(link, {
               method: 'GET',
               headers: {
                   'Content-Type': 'application/json',
@@ -267,11 +357,28 @@ import styles from './EventStyle';
             const astro = await astroApiCall.json();
             var firstEvent = astro.events[0];
             this.setState({eventId: firstEvent.id, eventName: firstEvent.name, eventDate: firstEvent.date, eventType: firstEvent.type, eventTypeID: firstEvent.preference_id});
-          //  console.log('GET name:', firstEvent); // astro.events['0'].name // firstEvent.comments[1]
-          this.setState({comments: firstEvent.comments});
-        } catch (err) {
-          console.log('Err GET current_event', err);
+            //  console.log('GET name:', firstEvent); // astro.events['0'].name // firstEvent.comments[1]
+            this.setState({comments: firstEvent.comments});
+          } catch (err) {
+            console.log('Err GET current_event', err);
+          }
         }
+
+       
+      }
+
+      showImage = (author, url) => {
+        this.setState({isImageViewVisible: true, images: [{
+            source: {
+              uri: url,
+            },
+            title: author
+          }]
+        });
+      }
+
+      closeImage = () => {
+        this.setState({isImageViewVisible: false});
       }
 
       componentWillUnmount() {
@@ -298,7 +405,7 @@ import styles from './EventStyle';
                   />
                 </View>
                 <View style={styles.eventElementExt}>
-                  <Text style={styles.eventTitle}>{this.state.eventName}</Text>
+                  <Text style={styles.eventTitle}>{ this.state.eventName == '' || this.state.eventName == null ? 'User event' : this.state.eventName}</Text>
                   <Text style={styles.eventDesc}>Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet. Lorem ipsum dolor sit omlet.</Text>
                 </View>
               </View>
@@ -311,29 +418,40 @@ import styles from './EventStyle';
                   this.state.comments.map((comment) => {
                   return (
                     <View key={comment.id} style={styles.commentBox}>
-                      <View style={styles.commentAvatar}>
-                        <Image
-                          style={{width: 40, height: 40}}
-                          source={{uri: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png'}}
-                        />
+                      <View style={styles.commentWrap}>
+                        <View style={styles.commentAvatar}>
+                          <Image
+                            style={{width: 40, height: 40}}
+                            source={{uri: 'https://www.pngarts.com/files/3/Avatar-PNG-Image.png'}}
+                          />
+                        </View>
+                        <View style={styles.commentContent}>
+                          <Text style={styles.commentAuthor}>
+                            Author: {comment.user_email}
+                          </Text>
+                          <Text style={styles.commentContent}>
+                            {comment.content}
+                          </Text>
+                        </View>
                       </View>
-                      <View style={styles.commentContent}>
-                        <Text style={styles.commentAuthor}>
-                          Author: {comment.user_email}
-                        </Text>
-                        <Text style={styles.commentContent}>
-                          {comment.content}
-                        </Text>
-                      </View>
-                      <View style={styles.commentAvatar}>
-                        <Image
-                          style={{width: 40, height: 40}}
-                          source={{uri: comment.url}}
-                        />
+                      <View style={styles.commentImage}>
+                        {
+                          comment.url != null && comment.url != '' ?
+                            (
+
+                              <TouchableOpacity style={styles.commentAvatar} onPress={() => this.showImage(comment.user_email, comment.url)} >
+                                <Image
+                                  style={{width: 80, height: 60}}
+                                  source={{uri: comment.url}}
+                                />
+                              </TouchableOpacity>
+                            )
+                            :
+                            (<View />)
+                        }
                       </View>
                     </View>
-                      )
-                  })
+                  )})
               }
               {/* <View>
                 <Text>Add comment:</Text>
@@ -361,7 +479,7 @@ import styles from './EventStyle';
                   multiline={true}
                   numberOfLines={4}
                   onChangeText={(text) => this.setState({newComment: text})}
-                  value={this.state.text} 
+                  value={this.state.newComment} 
                   placeholder="Enter your comment..."
 
                   style={styles.textarea} />
@@ -392,7 +510,12 @@ import styles from './EventStyle';
                 </View>
               </View>
             </Modal>
-
+            <ImageView
+              images={this.state.images}
+              imageIndex={0}
+              isVisible={this.state.isImageViewVisible}
+              onClose={this.closeImage.bind(this)}
+            />
             <View style={styles.bottomSection}>
                     <View style={styles.navigation}>
                     <Button

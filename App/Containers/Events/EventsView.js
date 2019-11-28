@@ -14,41 +14,6 @@ import styles from './EventsStyle';
     state = {
         isLogged: false,
         events: [
-            {
-                id: '233131',
-                preference_id: '3', // preference_id
-                name: 'Lunar Eclipse', // name
-                eventDesc: 'Lorem xd', // brak
-                date: '2022-04-08T20:26:50.969Z'
-            },
-            {
-                id: '231361',
-                preference_id: '1',
-                name: 'Lunar Eclipse',
-                eventDesc: 'Lorem xd',
-                date: '2022-04-08T20:26:50.969Z'
-            },
-            {
-                id: '231371',
-                preference_id: '2',
-                name: 'Lunar Eclipse',
-                eventDesc: 'Lorem xd',
-                date: '2022-04-08T20:26:50.969Z'
-            },
-            {
-                id: '923131',
-                preference_id: '5',
-                name: 'Lunar Eclipse',
-                eventDesc: 'Lorem xd',
-                date: '2022-04-08T20:26:50.969Z'
-            },
-            {
-                id: '123131',
-                preference_id: '3',
-                name: 'Lunar Eclipse',
-                eventDesc: 'Lorem xd',
-                date: '2022-04-08T20:26:50.969Z'
-            }
         ],
         eventTypes: {
             '1': {
@@ -77,6 +42,9 @@ import styles from './EventsStyle';
             },
             '9': {
               image: 'https://www.jing.fm/clipimg/full/53-539988_asteroid-2-icon-asteroid-icon.png'
+            },
+            '10': {
+              image: 'https://forums.unraid.net/applications/core/interface/imageproxy/imageproxy.php?img=http://i.imgur.com/TxGPjwu.png&key=f0c451f46385d84efe339aac6453af811fbaee80916423c49ca14824b5bd7411'
             }
         },
           isModalVisible: false,
@@ -85,13 +53,13 @@ import styles from './EventsStyle';
           modalButtonText: 'Close'
     }
     componentDidUpdate(prevProps) {
-        if(prevProps !== undefined && prevProps.navigation.state.params !== undefined){ // Dodałem warunek, jest ok
-          if(prevProps != null && 
-            prevProps.navigation.state.params.id != this.props.navigation.state.params.id) // (po świeżym logowaniu) TypeError: undefined is not an object (evaluating 'prevProps.navigation.state.params.id')
-          console.log('params1:', this.props.navigation.state.params);
-        }else{
-          console.log('params2:', this.props.navigation.state.params);
-        }
+        // if(prevProps !== undefined && prevProps.navigation.state.params !== undefined){ // Dodałem warunek, jest ok
+        //   if(prevProps != null && 
+        //     prevProps.navigation.state.params.id != this.props.navigation.state.params.id) // (po świeżym logowaniu) TypeError: undefined is not an object (evaluating 'prevProps.navigation.state.params.id')
+        //   console.log('params1:', this.props.navigation.state.params);
+        // }else{
+        //   console.log('params2:', this.props.navigation.state.params);
+        // }
     }
 
     async componentDidMount() {
@@ -115,9 +83,30 @@ import styles from './EventsStyle';
     static navigationOptions = ({ navigate, navigation }) => ({
         title: "Incoming events",
         //headerRight: <Button title="Logout" onPress={()=>{ navigation.navigate('Login'); }} />,
-        headerRight: <Button title="Logout" onPress={ async ()=>{ await AsyncStorage.setItem("auth_token", '').then(() => {
-          navigation.navigate('Authorization');
-        }); }} />,
+        headerRight: <View>
+        <Button title="Reload" onPress={ async () => { 
+
+          try {
+            const auth_token = await AsyncStorage.getItem('auth_token');
+            const astroApiCall = await fetch('https://astro-api-dev.herokuapp.com/events/', {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': auth_token
+              }
+            });
+
+            const astro = await astroApiCall.json();
+            this.setState({events: astro.events});
+          } catch (err) {
+          console.log('Err GET events:', err);
+          }
+
+          }} />
+          <Button title="Logout" onPress={ async ()=>{ await AsyncStorage.setItem("auth_token", '').then(() => {
+            navigation.navigate('Authorization');
+          }); }} />
+        </View>
       })
 
     // hideModal = () => {
@@ -141,14 +130,13 @@ import styles from './EventsStyle';
     showModal(){
 
     }
-
     
     showEvent = (id) => {
         this.props.navigation.navigate('Event', {id: id});
     }
 
     addEvent(){
-        
+      this.props.navigation.navigate('CreateEvent');
     }
 
     dateString(dat) {
@@ -175,7 +163,7 @@ import styles from './EventsStyle';
                                         </View>
                                         <View style={styles.eventElementExt}>
                                             <View style={styles.eventTitle}>
-                                                <Text style={styles.eventTitle}>{cb.name}</Text>
+                                                <Text style={styles.eventTitle}>{ cb.name == '' || cb.name == null ? 'User event' : cb.name}</Text>
                                             </View>
                                             <View style={styles.eventDesc}>
                                                 <Text>Date: {cb.date.substring(0,10)}</Text>
